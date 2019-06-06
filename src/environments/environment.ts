@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  openIdAuthorityUrl: 'https://api.learning-layers.eu/o/oauth2',
+  openIdClientId: 'f8622260-875b-499a-82db-db55f89f9deb',
+  las2peerWebConnectorUrl: 'http://127.0.0.1:8080',
 };
 
 /*

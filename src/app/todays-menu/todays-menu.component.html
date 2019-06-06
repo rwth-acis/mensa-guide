@@ -1,0 +1,26 @@
+<mat-form-field class="mensa-select">
+  <mat-label>Select your Mensa</mat-label>
+  <mat-select [value]="selectedMensa" (selectionChange)="onMensaChanged($event.value)">
+    <mat-option *ngFor="let mensa of mensas" [value]="mensa.id">
+      {{mensa.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div *ngIf="selectedMensa">
+  <mat-card *ngIf="isWeekend()">
+    <mat-card-content>
+      <mat-icon color="primary">info_outlined</mat-icon>
+      <span class="notice-text">
+        <i>Please note that the mensas are closed on weekends. This is the menu for Monday.</i>
+    </span>
+    </mat-card-content>
+  </mat-card>
+  <app-dish-card *ngFor="let item of menu[selectedMensa].menus | keyvalue"
+                 [name]="item.value"
+                 [category]="item.key"
+                 [reviewCollection]="reviews.hasOwnProperty(item.value) ? reviews[item.value] : {}"
+                 [pictureCollection]="pictures.hasOwnProperty(item.value) ? pictures[item.value] : {}"
+  ></app-dish-card>
+</div>
+

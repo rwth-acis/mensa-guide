@@ -1,0 +1,25 @@
+<mat-card class="dish-card">
+  <mat-card-title>{{name == 'closed' ? 'Not Available' : name}}</mat-card-title>
+  <mat-card-subtitle *ngIf="category">{{category}}</mat-card-subtitle>
+  <mat-card-content *ngIf="name !== 'closed'">
+    <span id="average-stars" *ngIf="averageStars !== null">
+      <mat-icon *ngFor="let item of [].constructor(min(averageStars, 5))" color="primary">star</mat-icon>
+      <mat-icon *ngFor="let item of [].constructor(min(5-averageStars, 5))" color="primary">star_border</mat-icon>
+      <span id="average-stars-text">(from {{numReviews}} reviews)</span>
+    </span>
+    <div *ngIf="!initialized" id="carousel-placeholder">
+      <mat-spinner diameter="120"></mat-spinner>
+    </div>
+    <app-dish-carousel *ngIf="initialized"
+                       [pictures]="carouselData"
+                       [fitPicture]="fitPicture"
+                       [dish]="name">
+    </app-dish-carousel>
+  </mat-card-content>
+  <mat-card-actions *ngIf="name !== 'closed'">
+    <mat-spinner-button (btnClick)="triggerPhotoUpload()" [options]="uploadButtonOpts">UPLOAD PHOTO
+      <input #photoUpload id="photo-upload" type="file" accept="image/*">
+    </mat-spinner-button>
+    <button mat-button color="primary" (click)="openReviewDialog()">REVIEWS</button>
+  </mat-card-actions>
+</mat-card>

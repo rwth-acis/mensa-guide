@@ -1,0 +1,58 @@
+<ngx-hm-carousel
+  [(ngModel)]="currentIndex"
+  [show-num]="1"
+  [autoplay]="true"
+  [autoplay-speed]="5000"
+  [infinite]="infinite"
+  [drag-many]="true"
+  [aniTime]="200"
+  [data]="pictures"
+  class="carousel c-accent">
+
+  <section ngx-hm-carousel-container class="content">
+    <article class="item cursor-pointer"
+             ngx-hm-carousel-item
+             *ngFor="let image of pictures; let i = index"
+             [ngClass]="{'visible': currentIndex===i}">
+      <div class="img"
+           [style.backgroundImage]="'url('+image.image+')'"
+           [style.background-size]="fitPicture?'contain': null"
+           [style.background-repeat]="'no-repeat'">
+        <span class="author" *ngIf="image.author">
+          {{image.author ? 'by ' + image.author : ''}}
+          (<mat-button color="warn" class="delete-link" *ngIf="image.author == user.profile.preferred_username"
+                       (click)="openDeletePictureDialog(image)">DELETE</mat-button >)
+        </span>
+
+      </div>
+    </article>
+    <ng-template #infiniteContainer></ng-template>
+  </section>
+
+  <!-- only using in infinite mode or autoplay mode, that will render with-->
+  <ng-template #carouselContent let-image let-i="index">
+    <article class="item cursor-pointer"
+             [ngClass]="{'visible': currentIndex===i}">
+      <div class="img"
+           [style.backgroundImage]="'url('+image+')'">
+        <span class="author" *ngIf="image.author">{{image.author ? 'by ' + image.author : ''}}</span>
+      </div>
+    </article>
+  </ng-template>
+
+  <ng-template #carouselPrev>
+    <div class="click-area" *ngIf="pictures.length > 1">
+      <i class="material-icons">keyboard_arrow_left</i>
+    </div>
+  </ng-template>
+  <ng-template #carouselNext>
+    <div class="click-area" *ngIf="pictures.length > 1">
+      <i class="material-icons">keyboard_arrow_right</i>
+    </div>
+  </ng-template>
+
+  <ng-template #carouselProgress let-progress>
+    <div class="progress"></div>
+  </ng-template>
+
+</ngx-hm-carousel>

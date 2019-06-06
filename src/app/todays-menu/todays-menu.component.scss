@@ -1,0 +1,13 @@
+.mensa-select {
+  width: 100%;
+}
+
+app-dish-card, mat-card {
+  margin-bottom: 10px;
+  .notice-text{
+    position: absolute;
+    margin-left: 5px; /* optional */
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+}

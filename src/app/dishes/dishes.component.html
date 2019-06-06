@@ -1,0 +1,7 @@
+<mat-card *ngIf="dishes.length === 0">No dishes yet. Check back tomorrow!</mat-card>
+
+<app-dish-card *ngFor="let dish of dishes"
+               [name]="dish"
+               [reviewCollection]="reviews.hasOwnProperty(dish) ? reviews[dish] : {}"
+               [pictureCollection]="pictures.hasOwnProperty(dish) ? pictures[dish] : {}"
+></app-dish-card>

@@ -1,21 +1,56 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
-<router-outlet></router-outlet>
+<mat-sidenav-container>
+  <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+               [fixedInViewport]="mobileQuery.matches"
+               [opened]="!mobileQuery.matches">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/" routerLinkActive="active" (click)="menuItemClicked()">
+        <mat-icon matListIcon>today</mat-icon>
+        Today's Menu
+      </a>
+      <a mat-list-item routerLink="/dishes" routerLinkActive="active" (click)="menuItemClicked()">
+        <mat-icon matListIcon>fastfood</mat-icon>
+        Dishes from A-Z
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <las2peer-frontend-statusbar id="las2peer-statusbar" service="{{title}}"
+                                 [attr.oidcAuthority]="environment.openIdAuthorityUrl"
+                                 [attr.oidcclientid]="environment.openIdClientId"
+                                 [attr.baseurl]="environment.las2peerWebConnectorUrl"
+                                 oidcpopupsigninurl="oidc-signin"
+                                 oidcpopupsignouturl="oidc-signout"
+                                 oidcsilentsigninturl="oidc-silent"
+                                 [attr.loggedIn]="user == null ? null : true "
+                                 [attr.loginName]="user == null ? '' : user.profile.preferred_username"
+                                 [attr.loginOidcToken]="user == null ? '' : user.access_token"
+                                 [attr.loginOidcSub]="user == null ? '' : user.profile.sub"
+                                 autoAppendWidget=true
+                                 (signed-in)="setUser($event.detail)"
+                                 (signed-out)="setUser(null)">
+      <button mat-icon-button id="menu-button" *ngIf="mobileQuery.matches" slot="left" (click)="snav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <h2 slot="title">Mensa Guide</h2>
+    </las2peer-frontend-statusbar>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+    <mat-divider></mat-divider>
+    <footer>
+      <small>
+        <span>Made by <a href="https://github.com/phihos/" target="_blank">Philipp Hossner</a> as a master thesis side-project for <a
+          href="http://dbis.rwth-aachen.de/cms" target="_blank">RWTH i5</a>.</span><br>
+        <span>App logo made by <a
+          href="https://www.freepik.com/?__hstc=57440181.99c589360f169e8a3da0a279b387ec07.1559310951985.1559310951985.1559310951985.1&__hssc=57440181.1.1559310951985&__hsfp=2047237071"
+          title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">www.flaticon.com</a> is
+          licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0"
+                         target="_blank">CC 3.0 BY</a>.
+        </span>
+      </small>
+      <a href="https://las2peer.org/" target="_blank">
+        <img id="las2peer-logo" alt="las2peer-logo" src="assets/footer/las2peer.svg">
+      </a>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

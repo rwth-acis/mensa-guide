@@ -1,6 +1,18 @@
+![las2peer](https://rwth-acis.github.io/las2peer/logo/vector/las2peer-logo.svg)
+
 # MensaGuide
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
+Web frontend for the [las2peer mensa service](https://github.com/rwth-acis/las2peer-Mensa-Service/).
+
+Features include:
+* Get today's menu for all supported mensas.
+* See reviews for a dish or write one yourself.
+* View and add a pictures for a dish.
+* See a list of all dishes from the past.
+
+# Configuration
+
+Edit the variables in `src/environments/environment.ts` to configure your development environment and `src/environments/environment.prod.ts` for the productive build.  
 
 ## Development server
 

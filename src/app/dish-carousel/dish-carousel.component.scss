@@ -1,0 +1,61 @@
+$transition_time:.2s;
+
+.carousel {
+  color:black;
+  text-shadow: white 0px 0px 10px;
+  .content {
+    display: flex;
+
+    .item {
+      width: 100%;
+      padding: .5em;
+      display: block;
+      opacity: 0.5;
+
+      transition: opacity 0.295s linear $transition_time;
+
+      &.visible {
+        opacity: 1;
+      }
+      .author{
+        position: relative;
+        top: 10px;
+        left: 10px;
+      }
+      .delete-link{
+        color: red;
+      }
+      .img {
+        width: 100%;
+        height: 400px;
+        display: block;
+        background-size: cover;
+        background-position: center;
+      }
+    }
+
+
+  }
+
+  .ball {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: black;
+    border: 2px solid;
+    opacity: 0.5;
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  .click-area {
+    width: 50px;
+    text-align: center;
+
+    i {
+      font-size: 3em;
+    }
+  }
+}

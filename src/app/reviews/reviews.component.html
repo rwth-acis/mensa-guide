@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>Reviews for "{{data.dish}}"</h1>
+<div mat-dialog-content>
+  <div *ngIf="!editMode">
+    <p *ngIf="sortedReviews.length === 0">
+      "{{data.dish}}" has no reviews yet. Did you ever have this dish? Then please tell us about it by writing the first
+      review!
+    </p>
+
+    <p *ngFor="let review of sortedReviews">
+      {{review.author}}<br>
+      <span class="stars">
+        <mat-icon *ngFor="let item of [].constructor(min(review.stars, 5))" color="primary">star</mat-icon>
+        <mat-icon *ngFor="let item of [].constructor(min(5-review.stars, 5))" color="primary">star_border</mat-icon>
+        <span class="stars-text">
+          at {{mensas[review.mensa]}}
+        </span>
+      </span>
+      {{formatDate(review.timestamp)}}
+      <span *ngIf="review.comment">
+        <br><br>
+        {{review.comment}}
+      </span>
+    </p>
+  </div>
+  <div *ngIf="user && editMode" id="review-form-container">
+    <app-review-form #reviewForm [dish]="data.dish"
+                     [review]="reviews.hasOwnProperty(user.profile.preferred_username) ? reviews[user.profile.preferred_username] : {author: null, comment: '', timestamp: null, mensa: null, stars: 5}"></app-review-form>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button *ngIf="user && !editMode" mat-button (click)="editMode=true">
+    {{reviews.hasOwnProperty(user.profile.preferred_username) ? 'Edit my Review' : 'Add Review'}}</button>
+  <button *ngIf="!user" mat-button disabled>Login to Add a Review</button>
+  <button *ngIf="user && editMode" mat-button (click)="editMode=false">Cancel</button>
+  <button *ngIf="user && editMode && reviews.hasOwnProperty(user.profile.preferred_username)" mat-button
+          (click)="deleteReview();editMode=false" color="warn">Delete Review</button>
+  <button *ngIf="user && editMode" mat-button (click)="reviewForm.save();editMode=false">Save Review</button>
+  <button *ngIf="!editMode" mat-button mat-dialog-close cdkFocusInitial>Ok</button>
+</div>

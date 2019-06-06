@@ -1,3 +1,6 @@
+import 'hammerjs';
+import '@webcomponents/webcomponentsjs/webcomponents-loader.js';
+import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
@@ -8,5 +11,8 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+platformBrowserDynamic().bootstrapModule(AppModule).then(() => {
+  if ('serviceWorker' in navigator && environment.production) {
+    navigator.serviceWorker.register('ngsw-worker.js');
+  }
+}).catch(err => console.error(err));

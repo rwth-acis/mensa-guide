@@ -13,13 +13,16 @@ import {OidcSignoutComponent} from './oidc-signout/oidc-signout.component';
 import {OidcSigninComponent} from './oidc-signin/oidc-signin.component';
 import {
   MatButtonModule,
-  MatCardModule, MatDialogModule,
+  MatCardModule,
+  MatDialogModule,
   MatFormFieldModule,
-  MatIconModule, MatInputModule,
+  MatIconModule,
+  MatInputModule,
   MatListModule,
   MatProgressSpinnerModule,
   MatSelectModule,
-  MatSidenavModule, MatSliderModule,
+  MatSidenavModule,
+  MatSliderModule,
   MatSnackBarModule
 } from '@angular/material';
 import {MatProgressButtonsModule} from 'mat-progress-buttons';
@@ -31,10 +34,10 @@ import {FormsModule} from '@angular/forms';
 import {DishCardComponent} from './dish-card/dish-card.component';
 import {ReviewsComponent} from './reviews/reviews.component';
 import {ReviewFormComponent} from './review-form/review-form.component';
-import { DeletePictureDialogComponent } from './delete-picture-dialog/delete-picture-dialog.component';
+import {DeletePictureDialogComponent} from './delete-picture-dialog/delete-picture-dialog.component';
 import {HttpClientModule} from '@angular/common/http';
 
-export const config ={
+export const config = {
   declarations: [
     AppComponent,
     OidcSigninComponent,

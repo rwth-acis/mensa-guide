@@ -5,11 +5,12 @@ describe('workspace-project App', () => {
   let page: AppPage;
 
   beforeEach(() => {
+    // disable because we constantly poll in the background
+    browser.waitForAngularEnabled(false);
     page = new AppPage();
   });
 
   it('should display welcome message', () => {
-    browser.ignoreSynchronization = true;
     page.navigateTo();
     expect(page.getTitleText()).toEqual('Mensa Guide');
   });

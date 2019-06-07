@@ -2,6 +2,8 @@
 
 # MensaGuide
 
+[![Build Status](https://travis-ci.org/rwth-acis/mensa-guide.svg?branch=master)](https://travis-ci.org/rwth-acis/mensa-guide)
+
 Web frontend for the [las2peer mensa service](https://github.com/rwth-acis/las2peer-Mensa-Service/).
 
 Features include:

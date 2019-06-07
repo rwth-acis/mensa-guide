@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {NGXLogger} from 'ngx-logger';
 import {environment} from '../environments/environment';
 import {merge} from 'lodash';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 export interface Menu {
   extras: object;
@@ -41,7 +42,7 @@ export class ApiService {
   MENSA_SERVICE_RATINGS_PATH = 'ratings';
   MENSA_SERVICE_PICTURES_PATH = 'pictures';
 
-  constructor(private logger: NGXLogger) {
+  constructor(private http: HttpClient, private logger: NGXLogger) {
   }
 
   static joinAbsoluteUrlPath(...args) {
@@ -56,8 +57,13 @@ export class ApiService {
     this.userCredentials = null;
   }
 
-  async makeRequest(url: string, options: RequestInit = {}) {
+  async makeRequest<T>(url: string, options: {
+    method?: string; headers?: {
+      [header: string]: string | string[];
+    }; body?: string
+  } = {}) {
     options = merge({
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'accept-language': 'en-US',
@@ -75,62 +81,73 @@ export class ApiService {
       });
     }
     this.logger.debug('Fetching from ' + url + ' with options ' + JSON.stringify(options));
-    return new Promise<Response>((resolve, reject) => {
-      fetch(url, options).then((response) => {
-        if (response.ok) {
-          resolve(response);
-        } else {
-          reject(response);
-        }
-      }).catch(reject);
-    });
+    const ngHttpOptions: {
+      body?: any;
+      headers?: HttpHeaders | {
+        [header: string]: string | string[];
+      };
+      observe?: 'body';
+      params?: HttpParams | {
+        [param: string]: string | string[];
+      };
+      responseType?: 'json';
+      reportProgress?: boolean;
+      withCredentials?: boolean;
+    } = {};
+    if (options.headers) {
+      ngHttpOptions.headers = new HttpHeaders(options.headers);
+    }
+    if (options.body) {
+      ngHttpOptions.body = options.body;
+    }
+    return this.http.request<T>(options.method, url, ngHttpOptions).toPromise();
   }
 
   async fetchDishes(): Promise<string[]> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH);
-    return this.makeRequest(url).then((response) => response.json());
+    return this.makeRequest<string[]>(url);
   }
 
   async fetchMenu(mensa: string): Promise<Menu> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH,
-      encodeURI(mensa) + '?format=json');
-    return this.makeRequest(url).then((response) => response.json());
+      encodeURIComponent(mensa) + '?format=json');
+    return this.makeRequest<Menu>(url);
   }
 
   async fetchRatings(dish: string): Promise<RatingCollection> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH, this.MENSA_SERVICE_DISHES_PATH,
-      encodeURI(dish), this.MENSA_SERVICE_RATINGS_PATH);
-    return this.makeRequest(url).then((response) => response.json());
+      encodeURIComponent(dish), this.MENSA_SERVICE_RATINGS_PATH);
+    return this.makeRequest<RatingCollection>(url);
   }
 
   async fetchPictures(dish: string): Promise<PictureCollection> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH, this.MENSA_SERVICE_DISHES_PATH,
-      encodeURI(dish), this.MENSA_SERVICE_PICTURES_PATH);
-    return this.makeRequest(url).then((response) => response.json());
+      encodeURIComponent(dish), this.MENSA_SERVICE_PICTURES_PATH);
+    return this.makeRequest<PictureCollection>(url);
   }
 
   async addRating(dish: string, rating: Rating): Promise<RatingCollection> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH, this.MENSA_SERVICE_DISHES_PATH,
-      encodeURI(dish), this.MENSA_SERVICE_RATINGS_PATH);
-    return this.makeRequest(url, {method: 'POST', body: JSON.stringify(rating)}).then((response) => response.json());
+      encodeURIComponent(dish), this.MENSA_SERVICE_RATINGS_PATH);
+    return this.makeRequest<RatingCollection>(url, {method: 'POST', body: JSON.stringify(rating)});
   }
 
   async deleteRating(dish: string): Promise<RatingCollection> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH, this.MENSA_SERVICE_DISHES_PATH,
-      encodeURI(dish), this.MENSA_SERVICE_RATINGS_PATH);
-    return this.makeRequest(url, {method: 'DELETE'}).then((response) => response.json());
+      encodeURIComponent(dish), this.MENSA_SERVICE_RATINGS_PATH);
+    return this.makeRequest<RatingCollection>(url, {method: 'DELETE'});
   }
 
   async addPicture(dish: string, picture: Picture): Promise<PictureCollection> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH, this.MENSA_SERVICE_DISHES_PATH,
-      encodeURI(dish), this.MENSA_SERVICE_PICTURES_PATH);
-    return this.makeRequest(url, {method: 'POST', body: JSON.stringify(picture)}).then((response) => response.json());
+      encodeURIComponent(dish), this.MENSA_SERVICE_PICTURES_PATH);
+    return this.makeRequest<PictureCollection>(url, {method: 'POST', body: JSON.stringify(picture)});
   }
 
   async deletePicture(dish: string, picture: Picture): Promise<PictureCollection> {
     const url = ApiService.joinAbsoluteUrlPath(environment.las2peerWebConnectorUrl, this.MENSA_SERVICE_PATH, this.MENSA_SERVICE_DISHES_PATH,
-      encodeURI(dish), this.MENSA_SERVICE_PICTURES_PATH);
-    return this.makeRequest(url, {method: 'DELETE', body: JSON.stringify(picture)}).then((response) => response.json());
+      encodeURIComponent(dish), this.MENSA_SERVICE_PICTURES_PATH);
+    return this.makeRequest<PictureCollection>(url, {method: 'DELETE', body: JSON.stringify(picture)});
   }
 }

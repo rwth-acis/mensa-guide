@@ -6,6 +6,6 @@ export class AppPage {
   }
 
   getTitleText() {
-    return element(by.css('app-root h1')).getText() as Promise<string>;
+    return element(by.css('las2peer-frontend-statusbar h2')).getText() as Promise<string>;
   }
 }

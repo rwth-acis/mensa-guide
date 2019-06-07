@@ -52,7 +52,7 @@ export class StoreService {
   public menuPictures = this.menuPicturesSubject.asObservable();
   private onlineSubject = new BehaviorSubject<boolean>(true);
   public online = this.onlineSubject.asObservable();
-  private intervalHandle: number;
+  private intervalHandle;
   private userSubject = new BehaviorSubject(null);
   public user = this.userSubject.asObservable();
   private selectedMensaSubject = new BehaviorSubject<string>(null);

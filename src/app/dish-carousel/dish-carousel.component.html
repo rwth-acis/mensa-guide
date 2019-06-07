@@ -7,6 +7,7 @@
   [drag-many]="true"
   [aniTime]="200"
   [data]="pictures"
+  *ngIf="pictures != null"
   class="carousel c-accent">
 
   <section ngx-hm-carousel-container class="content">
@@ -17,11 +18,12 @@
       <div class="img"
            [style.backgroundImage]="'url('+image.image+')'"
            [style.background-size]="fitPicture?'contain': null"
-           [style.background-repeat]="'no-repeat'">
+           [style.background-repeat]="'no-repeat'"
+           *ngIf="image">
         <span class="author" *ngIf="image.author">
           {{image.author ? 'by ' + image.author : ''}}
-          (<mat-button color="warn" class="delete-link" *ngIf="image.author == user.profile.preferred_username"
-                       (click)="openDeletePictureDialog(image)">DELETE</mat-button >)
+          <button mat-button color="warn" class="delete-link" *ngIf="image.author == user.profile.preferred_username"
+                   (click)="openDeletePictureDialog(image)">(DELETE)</button>
         </span>
 
       </div>
@@ -34,8 +36,13 @@
     <article class="item cursor-pointer"
              [ngClass]="{'visible': currentIndex===i}">
       <div class="img"
-           [style.backgroundImage]="'url('+image+')'">
-        <span class="author" *ngIf="image.author">{{image.author ? 'by ' + image.author : ''}}</span>
+           [style.backgroundImage]="'url('+image+')'"
+           *ngIf="image">
+        <span class="author" *ngIf="image.author">
+          {{image.author ? 'by ' + image.author : ''}}
+          <button mat-button color="warn" class="delete-link" *ngIf="image.author == user.profile.preferred_username"
+                  (click)="openDeletePictureDialog(image)">(DELETE)</button>
+        </span>
       </div>
     </article>
   </ng-template>

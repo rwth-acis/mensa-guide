@@ -17,8 +17,8 @@ export interface ReviewsDialogData {
 export class ReviewsComponent implements OnInit {
   @ViewChild('reviewForm', {static: false})
   reviewForm: ReviewFormComponent;
-  reviews: RatingCollection;
-  sortedReviews: Rating[];
+  reviews: RatingCollection = {};
+  sortedReviews: Rating[] = [];
   min = Math.min;
   user: { profile: {preferred_username: string} };
   /**

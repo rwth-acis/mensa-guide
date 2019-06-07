@@ -32,8 +32,9 @@ import {DishCardComponent} from './dish-card/dish-card.component';
 import {ReviewsComponent} from './reviews/reviews.component';
 import {ReviewFormComponent} from './review-form/review-form.component';
 import { DeletePictureDialogComponent } from './delete-picture-dialog/delete-picture-dialog.component';
+import {HttpClientModule} from '@angular/common/http';
 
-@NgModule({
+export const config ={
   declarations: [
     AppComponent,
     OidcSigninComponent,
@@ -49,6 +50,7 @@ import { DeletePictureDialogComponent } from './delete-picture-dialog/delete-pic
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
@@ -75,6 +77,8 @@ import { DeletePictureDialogComponent } from './delete-picture-dialog/delete-pic
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ]
-})
+};
+
+@NgModule(config)
 export class AppModule {
 }

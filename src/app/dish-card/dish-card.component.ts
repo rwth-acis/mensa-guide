@@ -16,8 +16,8 @@ import {meanBy} from 'lodash';
 export class DishCardComponent implements OnChanges, AfterViewInit {
   @Input() name: string;
   @Input() category: string;
-  @Input() reviewCollection: RatingCollection;
-  @Input() pictureCollection: PictureCollection;
+  @Input() reviewCollection: RatingCollection = {};
+  @Input() pictureCollection: PictureCollection = {};
   carouselData: Picture[] = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
   averageStars: number = null;
   @ViewChild('photoUpload', {static: false})
@@ -54,6 +54,9 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   }
 
   private static async extractImagesFromPictureCollection(pictures: PictureCollection): Promise<Picture[]> {
+    if (pictures == null) {
+      pictures = {};
+    }
     const imageData = [];
     for (const pictureArray of Object.values(pictures)) {
       for (const picture of pictureArray) {

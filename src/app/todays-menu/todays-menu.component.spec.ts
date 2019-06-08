@@ -2,7 +2,14 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TodaysMenuComponent} from './todays-menu.component';
 import {FormsModule} from '@angular/forms';
-import {MatCardModule, MatIconModule, MatProgressSpinnerModule, MatSelectModule, MatSlideToggleModule} from '@angular/material';
+import {
+  MatCardModule,
+  MatFormFieldModule,
+  MatIconModule, MatInputModule,
+  MatProgressSpinnerModule,
+  MatSelectModule,
+  MatSlideToggleModule
+} from '@angular/material';
 import {DishCardComponent} from '../dish-card/dish-card.component';
 import {DishCarouselComponent} from '../dish-carousel/dish-carousel.component';
 import {MatProgressButtonsModule} from 'mat-progress-buttons';
@@ -20,7 +27,7 @@ describe('TodaysMenuComponent', () => {
       declarations: [TodaysMenuComponent, DishCardComponent, DishCarouselComponent],
       imports: [FormsModule, MatSelectModule, MatIconModule, MatCardModule, MatProgressSpinnerModule, MatProgressButtonsModule.forRoot(),
         NgxHmCarouselModule, LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG}), BrowserAnimationsModule, HttpClientTestingModule,
-      MatSlideToggleModule]
+      MatSlideToggleModule, MatFormFieldModule, MatInputModule]
     })
       .compileComponents();
   }));

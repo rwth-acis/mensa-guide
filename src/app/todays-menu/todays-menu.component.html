@@ -1,17 +1,22 @@
+<mat-form-field class="mensa-select">
+  <mat-label>Select your Mensa</mat-label>
+  <mat-select [value]="selectedMensa" (selectionChange)="onMensaChanged($event.value)">
+    <mat-option *ngFor="let mensa of mensas" [value]="mensa.id">
+      {{mensa.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <div id="menu-controls">
-  <mat-form-field class="mensa-select">
-    <mat-label>Select your Mensa</mat-label>
-    <mat-select [value]="selectedMensa" (selectionChange)="onMensaChanged($event.value)">
-      <mat-option *ngFor="let mensa of mensas" [value]="mensa.id">
-        {{mensa.name}}
-      </mat-option>
-    </mat-select>
+  <mat-form-field class="dishes-filter">
+    <input matInput placeholder="Filter" [(ngModel)]="filter">
   </mat-form-field>
   <mat-slide-toggle class="compact-toggle" labelPosition="before" color="primary" [checked]="compactMode"
-                    (toggleChange)="onCompactToggled()" >
+                    (toggleChange)="onCompactToggled()">
     Compact
   </mat-slide-toggle>
 </div>
+
 
 <div *ngIf="selectedMensa">
   <mat-card *ngIf="isWeekend()">
@@ -22,12 +27,14 @@
     </span>
     </mat-card-content>
   </mat-card>
-  <app-dish-card *ngFor="let item of menu[selectedMensa].menus | keyvalue"
-                 [name]="item.value"
-                 [category]="item.key"
-                 [reviewCollection]="reviews.hasOwnProperty(item.value) ? reviews[item.value] : {}"
-                 [pictureCollection]="pictures.hasOwnProperty(item.value) ? pictures[item.value] : {}"
-                 [compact]="compactMode"
-  ></app-dish-card>
+  <div *ngFor="let item of menu[selectedMensa].menus | keyvalue">
+    <app-dish-card *ngIf="!isFiltered(item.value) || !isFiltered(item.key)"
+                   [name]="item.value"
+                   [category]="item.key"
+                   [reviewCollection]="reviews.hasOwnProperty(item.value) ? reviews[item.value] : {}"
+                   [pictureCollection]="pictures.hasOwnProperty(item.value) ? pictures[item.value] : {}"
+                   [compact]="compactMode"
+    ></app-dish-card>
+  </div>
 </div>
 

@@ -1,13 +1,20 @@
-<mat-slide-toggle class="compact-toggle" labelPosition="before" color="primary" [checked]="compactMode"
-                  (toggleChange)="onCompactToggled()" >
-  Compact
-</mat-slide-toggle>
+<div id="menu-controls">
+  <mat-form-field class="dishes-filter">
+    <input matInput placeholder="Filter" [(ngModel)]="filter">
+  </mat-form-field>
+  <mat-slide-toggle class="compact-toggle" labelPosition="before" color="primary" [checked]="compactMode"
+                    (toggleChange)="onCompactToggled()">
+    Compact
+  </mat-slide-toggle>
+</div>
 
 <mat-card *ngIf="dishes.length === 0">No dishes yet. Check back tomorrow!</mat-card>
 
-<app-dish-card *ngFor="let dish of dishes"
-               [name]="dish"
-               [reviewCollection]="reviews.hasOwnProperty(dish) ? reviews[dish] : {}"
-               [pictureCollection]="pictures.hasOwnProperty(dish) ? pictures[dish] : {}"
-               [compact]="compactMode"
-></app-dish-card>
+<div *ngFor="let dish of dishes">
+  <app-dish-card *ngIf="!isFiltered(dish)"
+                 [name]="dish"
+                 [reviewCollection]="reviews.hasOwnProperty(dish) ? reviews[dish] : {}"
+                 [pictureCollection]="pictures.hasOwnProperty(dish) ? pictures[dish] : {}"
+                 [compact]="compactMode"
+  ></app-dish-card>
+</div>

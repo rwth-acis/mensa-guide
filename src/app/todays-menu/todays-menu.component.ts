@@ -13,6 +13,7 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   selectedMensa: string;
   mensas: object[];
   compactMode = false;
+  filter = '';
 
   constructor(private store: StoreService) {
   }
@@ -43,5 +44,21 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.store.stopPolling();
+  }
+
+  isFiltered(name: string) {
+    if (this.filter) {
+      if (!name) {
+        return false;
+      }
+      let filterArr = this.filter.split(/(\s+)/);
+      filterArr = filterArr.filter(element => element !== '' && element !== ' ');
+      return !filterArr.some(element => {
+        const nameLowerCase = name.toLowerCase();
+        const elementLowerCase = element.toLowerCase();
+        return nameLowerCase.includes(elementLowerCase);
+      });
+    }
+    return false;
   }
 }

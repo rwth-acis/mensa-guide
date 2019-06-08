@@ -12,6 +12,7 @@ export class DishesComponent implements OnInit, OnDestroy {
   reviews: MenuRatings;
   pictures: MenuPictures;
   compactMode = false;
+  filter = '';
 
   constructor(private store: StoreService) {
   }
@@ -31,5 +32,21 @@ export class DishesComponent implements OnInit, OnDestroy {
 
   onCompactToggled() {
     this.store.setCompactMode(!this.compactMode);
+  }
+
+  isFiltered(name: string) {
+    if (this.filter) {
+      if (!name) {
+        return false;
+      }
+      let filterArr = this.filter.split(/(\s+)/);
+      filterArr = filterArr.filter(element => element !== '' && element !== ' ');
+      return !filterArr.some(element => {
+        const nameLowerCase = name.toLowerCase();
+        const elementLowerCase = element.toLowerCase();
+        return nameLowerCase.includes(elementLowerCase);
+      });
+    }
+    return false;
   }
 }

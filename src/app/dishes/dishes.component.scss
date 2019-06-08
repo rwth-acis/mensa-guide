@@ -1,7 +1,18 @@
-.compact-toggle {
-  margin-top: 10px;
-  margin-bottom: 15px;
+#menu-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .dishes-filter {
+    flex-grow: 1;
+  }
+
+  .compact-toggle {
+    margin-left: 5px;
+    margin-top: 10px;
+  }
 }
+
 
 app-dish-card, mat-card {
   margin-bottom: 10px;

@@ -1,11 +1,17 @@
-#menu-controls{
+.mensa-select {
+  width: 100%;
+}
+
+#menu-controls {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  .mensa-select {
+
+  .dishes-filter  {
     flex-grow: 1;
   }
-  .compact-toggle{
+
+  .compact-toggle {
     margin-left: 5px;
     margin-top: 10px;
   }
@@ -14,7 +20,8 @@
 
 app-dish-card, mat-card {
   margin-bottom: 10px;
-  .notice-text{
+
+  .notice-text {
     position: absolute;
     margin-left: 5px; /* optional */
     margin-right: 5px;

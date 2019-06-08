@@ -29,6 +29,7 @@ export interface State {
   pictures: MenuPictures;
   user: object;
   selectedMensa: string;
+  compactMode: boolean;
 }
 
 @Injectable({
@@ -57,6 +58,8 @@ export class StoreService {
   public user = this.userSubject.asObservable();
   private selectedMensaSubject = new BehaviorSubject<string>(null);
   public selectedMensa = this.selectedMensaSubject.asObservable();
+  private compactModeSubject = new BehaviorSubject<boolean>(false);
+  public compactMode = this.compactModeSubject.asObservable();
 
   constructor(private api: ApiService, private connection: ConnectionService) {
     this.loadStateFromLocalStorage();
@@ -74,6 +77,7 @@ export class StoreService {
       saveFunc();
     });
     this.selectedMensaSubject.subscribe(saveFunc);
+    this.compactModeSubject.subscribe(saveFunc);
   }
 
   public startPolling(todaysMenuOnly = true) {
@@ -94,6 +98,10 @@ export class StoreService {
 
   setSelectedMensa(mensa: string) {
     this.selectedMensaSubject.next(mensa);
+  }
+
+  setCompactMode(compact: boolean) {
+    this.compactModeSubject.next(compact);
   }
 
   async addPicture(dish: string, picture: Picture) {
@@ -192,6 +200,7 @@ export class StoreService {
       pictures: this.menuPicturesSubject.getValue(),
       user: this.userSubject.getValue(),
       selectedMensa: this.selectedMensaSubject.getValue(),
+      compactMode: this.compactModeSubject.getValue(),
     };
     localStorage.setItem('mensa-state', JSON.stringify(state));
   }
@@ -217,6 +226,9 @@ export class StoreService {
       }
       if (state.selectedMensa != null) {
         this.selectedMensaSubject.next(state.selectedMensa);
+      }
+      if (state.compactMode != null) {
+        this.compactModeSubject.next(state.compactMode);
       }
     }
   }

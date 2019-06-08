@@ -11,6 +11,7 @@ export class DishesComponent implements OnInit, OnDestroy {
   menu: MensaMenus;
   reviews: MenuRatings;
   pictures: MenuPictures;
+  compactMode = false;
 
   constructor(private store: StoreService) {
   }
@@ -21,9 +22,14 @@ export class DishesComponent implements OnInit, OnDestroy {
     this.store.menu.subscribe(menu => this.menu = menu);
     this.store.menuRatings.subscribe(reviews => this.reviews = reviews);
     this.store.menuPictures.subscribe(pictures => this.pictures = pictures);
+    this.store.compactMode.subscribe((compactMode) => this.compactMode = compactMode);
   }
 
   ngOnDestroy(): void {
     this.store.stopPolling();
+  }
+
+  onCompactToggled() {
+    this.store.setCompactMode(!this.compactMode);
   }
 }

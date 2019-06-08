@@ -1,7 +1,16 @@
 <mat-card class="dish-card">
-  <mat-card-title>{{name == 'closed' ? 'Not Available' : name}}</mat-card-title>
-  <mat-card-subtitle *ngIf="category">{{category}}</mat-card-subtitle>
-  <mat-card-content *ngIf="name !== 'closed'">
+  <div id="mat-card-top" [ngClass]="{compact: compact}">
+    <div id="mat-card-heading" (click)="toggleExpanded()">
+      <mat-card-title>{{name == 'closed' ? 'Not Available' : name}}</mat-card-title>
+      <mat-card-subtitle *ngIf="category">{{category}}</mat-card-subtitle>
+    </div>
+    <button *ngIf="compact" mat-icon-button aria-label="Expand" (click)="toggleExpanded()">
+      <mat-icon *ngIf="!expanded">keyboard_arrow_left</mat-icon>
+      <mat-icon *ngIf="expanded">keyboard_arrow_down</mat-icon>
+    </button>
+  </div>
+
+  <mat-card-content *ngIf="isExpanded() && name !== 'closed'">
     <span id="average-stars" *ngIf="averageStars !== null">
       <mat-icon *ngFor="let item of [].constructor(min(averageStars, 5))" color="primary">star</mat-icon>
       <mat-icon *ngFor="let item of [].constructor(min(5-averageStars, 5))" color="primary">star_border</mat-icon>
@@ -16,7 +25,7 @@
                        [dish]="name">
     </app-dish-carousel>
   </mat-card-content>
-  <mat-card-actions *ngIf="name !== 'closed'">
+  <mat-card-actions *ngIf="isExpanded() && name !== 'closed'">
     <mat-spinner-button (btnClick)="triggerPhotoUpload()" [options]="uploadButtonOpts">UPLOAD PHOTO
       <input #photoUpload id="photo-upload" type="file" accept="image/*">
     </mat-spinner-button>

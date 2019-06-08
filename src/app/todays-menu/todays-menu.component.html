@@ -1,11 +1,17 @@
-<mat-form-field class="mensa-select">
-  <mat-label>Select your Mensa</mat-label>
-  <mat-select [value]="selectedMensa" (selectionChange)="onMensaChanged($event.value)">
-    <mat-option *ngFor="let mensa of mensas" [value]="mensa.id">
-      {{mensa.name}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+<div id="menu-controls">
+  <mat-form-field class="mensa-select">
+    <mat-label>Select your Mensa</mat-label>
+    <mat-select [value]="selectedMensa" (selectionChange)="onMensaChanged($event.value)">
+      <mat-option *ngFor="let mensa of mensas" [value]="mensa.id">
+        {{mensa.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle class="compact-toggle" labelPosition="before" color="primary" [checked]="compactMode"
+                    (toggleChange)="onCompactToggled()" >
+    Compact
+  </mat-slide-toggle>
+</div>
 
 <div *ngIf="selectedMensa">
   <mat-card *ngIf="isWeekend()">
@@ -21,6 +27,7 @@
                  [category]="item.key"
                  [reviewCollection]="reviews.hasOwnProperty(item.value) ? reviews[item.value] : {}"
                  [pictureCollection]="pictures.hasOwnProperty(item.value) ? pictures[item.value] : {}"
+                 [compact]="compactMode"
   ></app-dish-card>
 </div>
 

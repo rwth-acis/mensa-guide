@@ -12,9 +12,9 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   pictures: MenuPictures;
   selectedMensa: string;
   mensas: object[];
+  compactMode = false;
 
   constructor(private store: StoreService) {
-    this.store.selectedMensa.subscribe((selectedMensa) => this.selectedMensa = selectedMensa);
   }
 
   onMensaChanged(mensa: string) {
@@ -22,7 +22,13 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
     setTimeout(_ => this.selectedMensa = mensa);
   }
 
+  onCompactToggled() {
+    this.store.setCompactMode(!this.compactMode);
+  }
+
   ngOnInit() {
+    this.store.selectedMensa.subscribe((selectedMensa) => this.selectedMensa = selectedMensa);
+    this.store.compactMode.subscribe((compactMode) => this.compactMode = compactMode);
     this.store.startPolling();
     this.store.menu.subscribe(menu => this.menu = menu);
     this.store.menuRatings.subscribe(reviews => this.reviews = reviews);

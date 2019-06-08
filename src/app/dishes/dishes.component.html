@@ -1,7 +1,13 @@
+<mat-slide-toggle class="compact-toggle" labelPosition="before" color="primary" [checked]="compactMode"
+                  (toggleChange)="onCompactToggled()" >
+  Compact
+</mat-slide-toggle>
+
 <mat-card *ngIf="dishes.length === 0">No dishes yet. Check back tomorrow!</mat-card>
 
 <app-dish-card *ngFor="let dish of dishes"
                [name]="dish"
                [reviewCollection]="reviews.hasOwnProperty(dish) ? reviews[dish] : {}"
                [pictureCollection]="pictures.hasOwnProperty(dish) ? pictures[dish] : {}"
+               [compact]="compactMode"
 ></app-dish-card>

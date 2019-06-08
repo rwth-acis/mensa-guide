@@ -23,6 +23,7 @@ import {
   MatSelectModule,
   MatSidenavModule,
   MatSliderModule,
+  MatSlideToggleModule,
   MatSnackBarModule
 } from '@angular/material';
 import {MatProgressButtonsModule} from 'mat-progress-buttons';
@@ -73,6 +74,7 @@ export const config = {
     MatInputModule,
     MatSliderModule,
     MatDialogModule,
+    MatSlideToggleModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

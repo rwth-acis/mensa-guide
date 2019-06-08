@@ -18,6 +18,8 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   @Input() category: string;
   @Input() reviewCollection: RatingCollection = {};
   @Input() pictureCollection: PictureCollection = {};
+  @Input() compact = false;
+  expanded = false;
   carouselData: Picture[] = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
   averageStars: number = null;
   @ViewChild('photoUpload', {static: false})
@@ -82,7 +84,9 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.photoFileInput.nativeElement.addEventListener('change', (e) => this.uploadPhoto(e.target.files));
+    if (this.photoFileInput) {
+      this.photoFileInput.nativeElement.addEventListener('change', (e) => this.uploadPhoto(e.target.files));
+    }
 
     setTimeout(_ => DishCardComponent.extractImagesFromPictureCollection(this.pictureCollection)
       .then(imageData => {
@@ -123,6 +127,16 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
       width: '80%',
       data: {dish: this.name}
     });
+  }
+
+  isExpanded() {
+    return !this.compact || this.expanded;
+  }
+
+  toggleExpanded() {
+    if (this.compact) {
+      this.expanded = !this.expanded;
+    }
   }
 
   private calculateAverageStars() {

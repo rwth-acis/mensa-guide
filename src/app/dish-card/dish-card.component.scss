@@ -2,9 +2,18 @@
   display: block;
 }
 
-#average-stars{
+#mat-card-top.compact {
+  display: flex;
+
+  #mat-card-heading {
+    flex-grow: 1;
+  }
+}
+
+#average-stars {
   display: block;
-  #average-stars-text{
+
+  #average-stars-text {
     position: absolute;
     margin-top: 5px;
     margin-left: 5px; /* optional */

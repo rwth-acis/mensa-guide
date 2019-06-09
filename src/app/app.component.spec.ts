@@ -4,6 +4,8 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {MatSnackBarModule} from '@angular/material';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -11,7 +13,9 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
-        LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG})
+        LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG}),
+        ServiceWorkerModule.register('', {enabled: false}),
+        MatSnackBarModule,
       ],
       declarations: [
         AppComponent

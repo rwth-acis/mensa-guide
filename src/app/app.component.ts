@@ -1,12 +1,12 @@
-import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {StoreService} from './store.service';
 import {environment} from '../environments/environment';
 import 'oidc-client';
 import 'las2peer-frontend-statusbar/las2peer-frontend-statusbar.js';
 import {CordovaPopupNavigator, UserManager} from 'oidc-client';
 import {MediaMatcher} from '@angular/cdk/layout';
-import {MatSidenav} from '@angular/material';
-import * as Hammer from 'hammerjs';
+import {MatSidenav, MatSnackBar} from '@angular/material';
+import {SwUpdate} from '@angular/service-worker';
 
 // workaround for openidconned-signin
 // remove when the lib imports with "import {UserManager} from 'oidc-client';" instead of "import 'oidc-client';"
@@ -36,7 +36,8 @@ export class AppComponent implements OnInit, OnDestroy {
   signedIn = false;
   environment = environment;
 
-  constructor(private store: StoreService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private elementRef: ElementRef) {
+  constructor(private store: StoreService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private swUpdate: SwUpdate,
+              private snackBar: MatSnackBar) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addEventListener('change', this.mobileQueryListener, false);
@@ -60,6 +61,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.sidenav.close();
       }
     });*/
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe(() => {
+        const snackBarRef = this.snackBar.open('New version available. Reload to update.', 'Reload', null);
+        snackBarRef.onAction().subscribe(() => {
+          window.location.reload();
+        });
+      });
+    }
     this.store.user.subscribe(user => {
       this.user = user;
       this.signedIn = !!user;

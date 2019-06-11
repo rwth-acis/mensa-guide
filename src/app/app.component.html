@@ -20,7 +20,7 @@
                                  [attr.baseurl]="environment.las2peerWebConnectorUrl"
                                  oidcpopupsigninurl="oidc-signin"
                                  oidcpopupsignouturl="oidc-signout"
-                                 oidcsilentsigninturl="oidc-silent"
+                                 oidcSilentSigninUrl="oidc-silent"
                                  [attr.loggedIn]="user == null ? null : true "
                                  [attr.loginName]="user == null ? '' : user.profile.preferred_username"
                                  [attr.loginOidcToken]="user == null ? '' : user.access_token"

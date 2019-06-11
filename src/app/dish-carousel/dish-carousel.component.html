@@ -22,7 +22,7 @@
            *ngIf="image">
         <span class="author" *ngIf="image.author">
           {{image.author ? 'by ' + image.author : ''}}
-          <button mat-button color="warn" class="delete-link" *ngIf="image.author == user.profile.preferred_username"
+          <button mat-button color="warn" class="delete-link" *ngIf="user && image.author == user.profile.preferred_username"
                    (click)="openDeletePictureDialog(image)">(DELETE)</button>
         </span>
 
@@ -40,7 +40,7 @@
            *ngIf="image">
         <span class="author" *ngIf="image.author">
           {{image.author ? 'by ' + image.author : ''}}
-          <button mat-button color="warn" class="delete-link" *ngIf="image.author == user.profile.preferred_username"
+          <button mat-button color="warn" class="delete-link" *ngIf="user && image.author == user.profile.preferred_username"
                   (click)="openDeletePictureDialog(image)">(DELETE)</button>
         </span>
       </div>

@@ -40,11 +40,13 @@ export class AppComponent implements OnInit, OnDestroy {
               private snackBar: MatSnackBar) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addEventListener('change', this.mobileQueryListener, false);
+    /* tslint:disable-next-line */
+    this.mobileQuery.addListener(this.mobileQueryListener);
   }
 
   ngOnDestroy(): void {
-    this.mobileQuery.removeEventListener('change', this.mobileQueryListener, false);
+    /* tslint:disable-next-line */
+    this.mobileQuery.removeListener(this.mobileQueryListener);
   }
 
   ngOnInit(): void {

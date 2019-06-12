@@ -7,6 +7,7 @@ import {CordovaPopupNavigator, UserManager} from 'oidc-client';
 import {MediaMatcher} from '@angular/cdk/layout';
 import {MatSidenav, MatSnackBar} from '@angular/material';
 import {SwUpdate} from '@angular/service-worker';
+import {Router} from '@angular/router';
 
 // workaround for openidconned-signin
 // remove when the lib imports with "import {UserManager} from 'oidc-client';" instead of "import 'oidc-client';"
@@ -37,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   environment = environment;
 
   constructor(private store: StoreService, changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private swUpdate: SwUpdate,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar, private router: Router) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     /* tslint:disable-next-line */
@@ -84,6 +85,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   setUser(user) {
+    if (user === null) {
+      new UserManager({}).signoutRedirectCallback().then(() => {
+        this.router.navigate(['/']);
+      });
+    }
     this.store.setUser(user);
   }
 }

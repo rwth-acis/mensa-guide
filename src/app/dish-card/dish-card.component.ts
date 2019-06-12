@@ -38,10 +38,11 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
     disabled: false,
     mode: 'indeterminate',
   };
-  fitPicture = false;
+  carouselPlaceholder = false;
   initialized = false;
   min = Math.min;
   private numReviews: number;
+  user;
 
   constructor(private store: StoreService, private snackBar: MatSnackBar, public dialog: MatDialog) {
     this.store.user.subscribe(user => {
@@ -84,6 +85,7 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.store.user.subscribe(user => this.user = user);
     if (this.photoFileInput) {
       this.photoFileInput.nativeElement.addEventListener('change', (e) => this.uploadPhoto(e.target.files));
     }
@@ -92,9 +94,9 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
       .then(imageData => {
         if (imageData.length === 0) {
           imageData = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
-          this.fitPicture = true;
+          this.carouselPlaceholder = true;
         } else {
-          this.fitPicture = false;
+          this.carouselPlaceholder = false;
         }
         this.carouselData = imageData;
         this.initialized = true;
@@ -109,9 +111,9 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
         DishCardComponent.extractImagesFromPictureCollection(pictures).then(imageData => {
           if (imageData.length === 0) {
             imageData = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
-            this.fitPicture = true;
+            this.carouselPlaceholder = true;
           } else {
-            this.fitPicture = false;
+            this.carouselPlaceholder = false;
           }
           this.carouselData = imageData;
         });
@@ -136,6 +138,12 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   toggleExpanded() {
     if (this.compact) {
       this.expanded = !this.expanded;
+    }
+  }
+
+  onCarouselClicked() {
+    if (this.user && this.carouselPlaceholder && this.photoFileInput.nativeElement) {
+      this.photoFileInput.nativeElement.click();
     }
   }
 

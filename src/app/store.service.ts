@@ -94,6 +94,7 @@ export class StoreService {
 
   setUser(user) {
     this.userSubject.next(user);
+    this.saveStateToLocalStorage();
   }
 
   setSelectedMensa(mensa: string) {

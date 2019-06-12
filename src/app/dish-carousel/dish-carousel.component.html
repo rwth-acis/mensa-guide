@@ -19,11 +19,12 @@
            [style.backgroundImage]="'url('+image.image+')'"
            [style.background-size]="fitPicture?'contain': null"
            [style.background-repeat]="'no-repeat'"
+           (click)="onPictureClicked(image)"
            *ngIf="image">
         <span class="author" *ngIf="image.author">
           {{image.author ? 'by ' + image.author : ''}}
           <button mat-button color="warn" class="delete-link" *ngIf="user && image.author == user.profile.preferred_username"
-                   (click)="openDeletePictureDialog(image)">(DELETE)</button>
+                   (click)="openDeletePictureDialog($event, image)">(DELETE)</button>
         </span>
 
       </div>
@@ -37,11 +38,12 @@
              [ngClass]="{'visible': currentIndex===i}">
       <div class="img"
            [style.backgroundImage]="'url('+image+')'"
+           (click)="onPictureClicked(image)"
            *ngIf="image">
         <span class="author" *ngIf="image.author">
           {{image.author ? 'by ' + image.author : ''}}
           <button mat-button color="warn" class="delete-link" *ngIf="user && image.author == user.profile.preferred_username"
-                  (click)="openDeletePictureDialog(image)">(DELETE)</button>
+                  (click)="openDeletePictureDialog($event, image)">(DELETE)</button>
         </span>
       </div>
     </article>

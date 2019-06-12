@@ -10,7 +10,7 @@
     </button>
   </div>
 
-  <mat-card-content *ngIf="isExpanded() && name !== 'closed'">
+  <mat-card-content [hidden]="!isExpanded() || name === 'closed'">
     <span id="average-stars" *ngIf="averageStars !== null">
       <mat-icon *ngFor="let item of [].constructor(min(averageStars, 5))" color="primary">star</mat-icon>
       <mat-icon *ngFor="let item of [].constructor(min(5-averageStars, 5))" color="primary">star_border</mat-icon>
@@ -21,11 +21,13 @@
     </div>
     <app-dish-carousel *ngIf="initialized"
                        [pictures]="carouselData"
-                       [fitPicture]="fitPicture"
-                       [dish]="name">
+                       [fitPicture]="carouselPlaceholder"
+                       [placeholder]="carouselPlaceholder"
+                       [dish]="name"
+    (click)="onCarouselClicked()">
     </app-dish-carousel>
   </mat-card-content>
-  <mat-card-actions *ngIf="isExpanded() && name !== 'closed'">
+  <mat-card-actions [hidden]="!isExpanded() || name === 'closed'">
     <mat-spinner-button (btnClick)="triggerPhotoUpload()" [options]="uploadButtonOpts">UPLOAD PHOTO
       <input #photoUpload id="photo-upload" type="file" accept="image/*">
     </mat-spinner-button>

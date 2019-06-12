@@ -37,6 +37,8 @@ import {ReviewsComponent} from './reviews/reviews.component';
 import {ReviewFormComponent} from './review-form/review-form.component';
 import {DeletePictureDialogComponent} from './delete-picture-dialog/delete-picture-dialog.component';
 import {HttpClientModule} from '@angular/common/http';
+import {ImageDialogComponent} from './image-dialog/image-dialog.component';
+import {PinchZoomModule} from 'ngx-pinch-zoom';
 
 export const config = {
   declarations: [
@@ -51,6 +53,7 @@ export const config = {
     ReviewsComponent,
     ReviewFormComponent,
     DeletePictureDialogComponent,
+    ImageDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,10 +78,11 @@ export const config = {
     MatSliderModule,
     MatDialogModule,
     MatSlideToggleModule,
+    PinchZoomModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [ReviewsComponent, DeletePictureDialogComponent],
+  entryComponents: [ReviewsComponent, DeletePictureDialogComponent, ImageDialogComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ]

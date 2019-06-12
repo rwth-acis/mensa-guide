@@ -34,6 +34,7 @@
     "moment": "^2.24.0",
     "ngx-hm-carousel": "^1.6.5-bata.1",
     "ngx-logger": "^3.3.13",
+    "ngx-pinch-zoom": "^1.2.3",
     "rxjs": "~6.5.2",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"

@@ -17,7 +17,7 @@ describe('DeletePictureDialogComponent', () => {
         provide: MAT_DIALOG_DATA,
         useValue: {
           dish: 'some dish',
-          picture: 'some pircture data',
+          picture: 'some picture data',
         }
       }]
     }).compileComponents();

@@ -3,6 +3,7 @@ import {Picture} from '../api.service';
 import {StoreService} from '../store.service';
 import {MatDialog} from '@angular/material';
 import {DeletePictureDialogComponent} from '../delete-picture-dialog/delete-picture-dialog.component';
+import {ImageDialogComponent} from '../image-dialog/image-dialog.component';
 
 @Component({
   selector: 'app-dish-carousel',
@@ -17,6 +18,7 @@ export class DishCarouselComponent implements OnInit {
   @Input() dish: string;
   @Input() pictures: Picture[] = [];
   @Input() fitPicture = false;
+  @Input() placeholder = false;
 
   constructor(private store: StoreService, private dialog: MatDialog) {
   }
@@ -25,9 +27,24 @@ export class DishCarouselComponent implements OnInit {
     this.store.user.subscribe(user => this.user = user);
   }
 
-  openDeletePictureDialog(picture: Picture) {
+  openDeletePictureDialog(event: Event, picture: Picture) {
+    event.stopPropagation();
     this.dialog.open(DeletePictureDialogComponent, {
       data: {dish: this.dish, picture}
+    });
+  }
+
+  onPictureClicked(picture: Picture) {
+    if (!this.placeholder) {
+      this.openShowPictureDialog(picture);
+    }
+  }
+
+  openShowPictureDialog(picture: Picture) {
+    this.dialog.open(ImageDialogComponent, {
+      maxWidth: '90vw',
+      width: '90vw',
+      data: {image: picture.image}
     });
   }
 }

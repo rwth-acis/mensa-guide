@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {ApiService, Menu, Picture, PictureCollection, Rating, RatingCollection} from './api.service';
 import {ConnectionService} from './connection.service';
-import {distinctUntilChanged} from 'rxjs/operators';
+import {distinctUntilChanged, throttleTime} from 'rxjs/operators';
+import {isEqual} from 'lodash';
 
 export interface MensaMenus {
   vita: Menu;
@@ -39,18 +40,22 @@ export class StoreService {
   public readonly mensas = [{name: 'Academica', id: 'academica'}, {name: 'Ahornstraße', id: 'ahornstrasse'},
     {name: 'Templergraben', id: 'templergraben'}, {name: 'Vita', id: 'vita'}];
   private dishesSubject = new BehaviorSubject<string[]>([]);
-  public dishes = this.dishesSubject.asObservable();
+  public dishes = this.dishesSubject.asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
   private menuSubject = new BehaviorSubject<MensaMenus>({
     vita: {extras: {}, menus: {}},
     academica: {extras: {}, menus: {}},
     ahornstrasse: {extras: {}, menus: {}},
     templergraben: {extras: {}, menus: {}}
   });
-  public menu = this.menuSubject.asObservable();
+  public menu = this.menuSubject.asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
   private menuRatingsSubject = new BehaviorSubject<MenuRatings>({});
-  public menuRatings = this.menuRatingsSubject.asObservable();
+  public menuRatings = this.menuRatingsSubject.asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
   private menuPicturesSubject = new BehaviorSubject<MenuPictures>({});
-  public menuPictures = this.menuPicturesSubject.asObservable();
+  public menuPictures = this.menuPicturesSubject.asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
   private onlineSubject = new BehaviorSubject<boolean>(true);
   public online = this.onlineSubject.asObservable();
   private intervalHandle;

@@ -5,7 +5,7 @@ import {MatProgressButtonOptions} from 'mat-progress-buttons';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Picture, PictureCollection, RatingCollection} from '../api.service';
 import {ReviewsComponent} from '../reviews/reviews.component';
-import {meanBy, range} from 'lodash';
+import {meanBy} from 'lodash';
 
 
 @Component({
@@ -40,10 +40,8 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   };
   carouselPlaceholder = false;
   initialized = false;
-  min = Math.min;
-  range=range;
-  private numReviews: number;
   user;
+  private numReviews: number;
 
   constructor(private store: StoreService, private snackBar: MatSnackBar, public dialog: MatDialog) {
     this.store.user.subscribe(user => {

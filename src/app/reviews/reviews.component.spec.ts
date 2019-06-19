@@ -6,6 +6,7 @@ import {ReviewFormComponent} from '../review-form/review-form.component';
 import {FormsModule} from '@angular/forms';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AverageStarsComponent} from '../average-stars/average-stars.component';
 
 describe('ReviewsComponent', () => {
   let component: ReviewsComponent;
@@ -13,7 +14,7 @@ describe('ReviewsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ReviewsComponent, ReviewFormComponent],
+      declarations: [ReviewsComponent, ReviewFormComponent, AverageStarsComponent],
       imports: [MatIconModule, FormsModule, MatInputModule, MatSelectModule, LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG}),
         MatSnackBarModule, MatDialogModule, HttpClientTestingModule],
       providers: [{

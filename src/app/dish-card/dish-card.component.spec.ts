@@ -15,6 +15,7 @@ import {NgxHmCarouselModule} from 'ngx-hm-carousel';
 import {FormsModule} from '@angular/forms';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AverageStarsComponent} from '../average-stars/average-stars.component';
 
 describe('DishCardComponent', () => {
   let component: DishCardComponent;
@@ -22,7 +23,7 @@ describe('DishCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DishCardComponent, DishCarouselComponent],
+      declarations: [DishCardComponent, DishCarouselComponent, AverageStarsComponent],
       imports: [MatDialogModule, MatSnackBarModule, MatButtonModule, MatCardModule, MatIconModule, MatProgressSpinnerModule,
         MatProgressButtonsModule.forRoot(), FormsModule, NgxHmCarouselModule, LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG}),
         HttpClientTestingModule]

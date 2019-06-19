@@ -1,6 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AverageStarsComponent } from './average-stars.component';
+import {AverageStarsComponent} from './average-stars.component';
+import {MatIconModule} from '@angular/material';
 
 describe('AverageStarsComponent', () => {
   let component: AverageStarsComponent;
@@ -8,9 +9,12 @@ describe('AverageStarsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AverageStarsComponent ]
+      declarations: [AverageStarsComponent],
+      imports: [
+        MatIconModule
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

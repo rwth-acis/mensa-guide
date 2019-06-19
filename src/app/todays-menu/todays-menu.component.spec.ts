@@ -17,6 +17,7 @@ import {NgxHmCarouselModule} from 'ngx-hm-carousel';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {AverageStarsComponent} from '../average-stars/average-stars.component';
 
 describe('TodaysMenuComponent', () => {
   let component: TodaysMenuComponent;
@@ -24,7 +25,7 @@ describe('TodaysMenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TodaysMenuComponent, DishCardComponent, DishCarouselComponent],
+      declarations: [TodaysMenuComponent, DishCardComponent, DishCarouselComponent, AverageStarsComponent],
       imports: [FormsModule, MatSelectModule, MatIconModule, MatCardModule, MatProgressSpinnerModule, MatProgressButtonsModule.forRoot(),
         NgxHmCarouselModule, LoggerModule.forRoot({level: NgxLoggerLevel.DEBUG}), BrowserAnimationsModule, HttpClientTestingModule,
       MatSlideToggleModule, MatFormFieldModule, MatInputModule]

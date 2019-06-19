@@ -5,7 +5,7 @@ import {MatProgressButtonOptions} from 'mat-progress-buttons';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Picture, PictureCollection, RatingCollection} from '../api.service';
 import {ReviewsComponent} from '../reviews/reviews.component';
-import {meanBy} from 'lodash';
+import {meanBy, range} from 'lodash';
 
 
 @Component({
@@ -41,6 +41,7 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   carouselPlaceholder = false;
   initialized = false;
   min = Math.min;
+  range=range;
   private numReviews: number;
   user;
 
@@ -153,7 +154,7 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
       this.averageStars = null;
       return;
     }
-    this.averageStars = meanBy(reviews, (review) => review.stars);
+    this.averageStars = Math.round(meanBy(reviews, (review) => review.stars));
     this.numReviews = reviews.length;
   }
 

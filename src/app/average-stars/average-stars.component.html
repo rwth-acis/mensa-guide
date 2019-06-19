@@ -1,0 +1,6 @@
+<span id="average-stars">
+  <mat-icon *ngFor="let item of range(min(averageStars, 5))" color="primary">star</mat-icon>
+  <mat-icon *ngFor="let item of range(min(5-averageStars, 5))" color="primary">star_border</mat-icon>
+
+  <span id="average-stars-text"><ng-content></ng-content></span>
+</span>

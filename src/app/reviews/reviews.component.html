@@ -8,13 +8,9 @@
 
     <p *ngFor="let review of sortedReviews">
       {{review.author}}<br>
-      <span class="stars">
-        <mat-icon *ngFor="let item of [].constructor(min(review.stars, 5))" color="primary">star</mat-icon>
-        <mat-icon *ngFor="let item of [].constructor(min(5-review.stars, 5))" color="primary">star_border</mat-icon>
-        <span class="stars-text">
-          at {{mensas[review.mensa]}}
-        </span>
-      </span>
+      <app-average-stars [averageStars]="review.stars">
+        at {{mensas[review.mensa]}}
+      </app-average-stars>
       {{formatDate(review.timestamp)}}
       <span *ngIf="review.comment">
         <br><br>

@@ -11,11 +11,10 @@
   </div>
 
   <mat-card-content [hidden]="!isExpanded() || name === 'closed'">
-    <span id="average-stars" *ngIf="averageStars !== null">
-      <mat-icon *ngFor="let item of [].constructor(min(averageStars, 5))" color="primary">star</mat-icon>
-      <mat-icon *ngFor="let item of [].constructor(min(5-averageStars, 5))" color="primary">star_border</mat-icon>
-      <span id="average-stars-text">(from {{numReviews}} reviews)</span>
-    </span>
+    <app-average-stars *ngIf="averageStars !== null"
+                       [averageStars]="averageStars">
+      (from {{numReviews}} reviews)
+    </app-average-stars>
     <div *ngIf="!initialized" id="carousel-placeholder">
       <mat-spinner diameter="120"></mat-spinner>
     </div>
@@ -24,7 +23,7 @@
                        [fitPicture]="carouselPlaceholder"
                        [placeholder]="carouselPlaceholder"
                        [dish]="name"
-    (click)="onCarouselClicked()">
+                       (click)="onCarouselClicked()">
     </app-dish-carousel>
   </mat-card-content>
   <mat-card-actions [hidden]="!isExpanded() || name === 'closed'">

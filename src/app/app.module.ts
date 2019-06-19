@@ -39,6 +39,7 @@ import {DeletePictureDialogComponent} from './delete-picture-dialog/delete-pictu
 import {HttpClientModule} from '@angular/common/http';
 import {ImageDialogComponent} from './image-dialog/image-dialog.component';
 import {PinchZoomModule} from 'ngx-pinch-zoom';
+import {AverageStarsComponent} from './average-stars/average-stars.component';
 
 export const config = {
   declarations: [
@@ -54,6 +55,7 @@ export const config = {
     ReviewFormComponent,
     DeletePictureDialogComponent,
     ImageDialogComponent,
+    AverageStarsComponent,
   ],
   imports: [
     BrowserModule,

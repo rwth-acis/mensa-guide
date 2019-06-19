@@ -12,7 +12,8 @@
 
   <mat-card-content [hidden]="!isExpanded() || name === 'closed'">
     <app-average-stars *ngIf="averageStars !== null"
-                       [averageStars]="averageStars">
+                       [averageStars]="averageStars"
+                       (click)="openReviewDialog()">
       (from {{numReviews}} reviews)
     </app-average-stars>
     <div *ngIf="!initialized" id="carousel-placeholder">

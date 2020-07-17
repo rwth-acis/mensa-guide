@@ -29,7 +29,7 @@
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
     "las2peer-frontend-statusbar": "github:rwth-acis/las2peer-frontend-statusbar",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mat-progress-buttons": "^8.0.4",
     "moment": "^2.24.0",
     "ngx-hm-carousel": "^1.6.5-bata.1",

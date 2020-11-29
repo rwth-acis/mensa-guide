@@ -1,9 +1,16 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {ApiService, Menu, Picture, PictureCollection, Rating, RatingCollection} from './api.service';
-import {ConnectionService} from './connection.service';
-import {distinctUntilChanged, throttleTime} from 'rxjs/operators';
-import {isEqual} from 'lodash';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import {
+  ApiService,
+  Menu,
+  Picture,
+  PictureCollection,
+  Rating,
+  RatingCollection,
+} from "./api.service";
+import { ConnectionService } from "./connection.service";
+import { distinctUntilChanged, throttleTime } from "rxjs/operators";
+import { isEqual } from "lodash";
 
 export interface MensaMenus {
   vita: Menu;
@@ -11,7 +18,6 @@ export interface MensaMenus {
   ahornstrasse: Menu;
   templergraben: Menu;
 }
-
 
 export interface MenuRatings {
   // menu item name
@@ -34,28 +40,39 @@ export interface State {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class StoreService {
-  public readonly mensas = [{name: 'Academica', id: 'academica'}, {name: 'Ahornstraße', id: 'ahornstrasse'},
-    {name: 'Templergraben', id: 'templergraben'}, {name: 'Vita', id: 'vita'}];
+  public readonly mensas = [
+    { name: "Academica", id: "academica" },
+    { name: "Ahornstraße", id: "ahornstrasse" },
+    { name: "Vita", id: "vita" },
+  ];
   private dishesSubject = new BehaviorSubject<string[]>([]);
-  public dishes = this.dishesSubject.asObservable()
-    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
+  public dishes = this.dishesSubject
+    .asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
+    .pipe(throttleTime(1000));
   private menuSubject = new BehaviorSubject<MensaMenus>({
-    vita: {extras: {}, menus: {}},
-    academica: {extras: {}, menus: {}},
-    ahornstrasse: {extras: {}, menus: {}},
-    templergraben: {extras: {}, menus: {}}
+    vita: { extras: {}, menus: {} },
+    academica: { extras: {}, menus: {} },
+    ahornstrasse: { extras: {}, menus: {} },
+    templergraben: { extras: {}, menus: {} },
   });
-  public menu = this.menuSubject.asObservable()
-    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
+  public menu = this.menuSubject
+    .asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
+    .pipe(throttleTime(1000));
   private menuRatingsSubject = new BehaviorSubject<MenuRatings>({});
-  public menuRatings = this.menuRatingsSubject.asObservable()
-    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
+  public menuRatings = this.menuRatingsSubject
+    .asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
+    .pipe(throttleTime(1000));
   private menuPicturesSubject = new BehaviorSubject<MenuPictures>({});
-  public menuPictures = this.menuPicturesSubject.asObservable()
-    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr))).pipe(throttleTime(1000));
+  public menuPictures = this.menuPicturesSubject
+    .asObservable()
+    .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
+    .pipe(throttleTime(1000));
   private onlineSubject = new BehaviorSubject<boolean>(true);
   public online = this.onlineSubject.asObservable();
   private intervalHandle;
@@ -68,14 +85,18 @@ export class StoreService {
 
   constructor(private api: ApiService, private connection: ConnectionService) {
     this.loadStateFromLocalStorage();
-    connection.monitor().subscribe(online => this.onlineSubject.next(online));
+    connection.monitor().subscribe((online) => this.onlineSubject.next(online));
     const saveFunc = () => this.saveStateToLocalStorage();
     this.menu.subscribe(saveFunc);
     this.menuRatings.subscribe(saveFunc);
     this.menuPictures.subscribe(saveFunc);
     this.user.pipe(distinctUntilChanged()).subscribe((user) => {
       if (user) {
-        this.api.setCredentials(user.profile.preferred_username, user.profile.sub, user.access_token);
+        this.api.setCredentials(
+          user.profile.preferred_username,
+          user.profile.sub,
+          user.access_token
+        );
       } else {
         this.api.resetCredentials();
       }
@@ -88,7 +109,10 @@ export class StoreService {
   public startPolling(todaysMenuOnly = true) {
     if (this.intervalHandle == null) {
       this.refreshState(todaysMenuOnly);
-      this.intervalHandle = setInterval(() => this.refreshState(todaysMenuOnly), 60000);
+      this.intervalHandle = setInterval(
+        () => this.refreshState(todaysMenuOnly),
+        60000
+      );
     }
   }
 
@@ -111,7 +135,7 @@ export class StoreService {
   }
 
   async addPicture(dish: string, picture: Picture) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.api.addPicture(dish, picture).then((updatedPictures) => {
         const pictures = this.menuPicturesSubject.getValue();
         pictures[dish] = updatedPictures;
@@ -122,7 +146,7 @@ export class StoreService {
   }
 
   async deletePicture(dish: string, picture: Picture) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.api.deletePicture(dish, picture).then((updatedPictures) => {
         const pictures = this.menuPicturesSubject.getValue();
         pictures[dish] = updatedPictures;
@@ -133,7 +157,7 @@ export class StoreService {
   }
 
   async addReview(dish: string, review: Rating) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.api.addRating(dish, review).then((updatedRatings) => {
         const reviews = this.menuRatingsSubject.getValue();
         reviews[dish] = updatedRatings;
@@ -144,7 +168,7 @@ export class StoreService {
   }
 
   async deleteReview(dish: string) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.api.deleteRating(dish).then((updatedRatings) => {
         const reviews = this.menuRatingsSubject.getValue();
         reviews[dish] = updatedRatings;
@@ -158,7 +182,7 @@ export class StoreService {
     if (this.onlineSubject.getValue()) {
       // keep track for what dishes we already fetched pictures and ratings
       const processedDishes = new Set();
-      this.api.fetchDishes().then(dishes => {
+      this.api.fetchDishes().then((dishes) => {
         this.dishesSubject.next(dishes);
         if (!todaysMenuOnly) {
           for (const menuItem of dishes) {
@@ -169,8 +193,8 @@ export class StoreService {
           }
         }
       });
-      for (const mensa of this.mensas.map(mensaInfo => mensaInfo.id)) {
-        this.api.fetchMenu(mensa).then(menu => {
+      for (const mensa of this.mensas.map((mensaInfo) => mensaInfo.id)) {
+        this.api.fetchMenu(mensa).then((menu) => {
           const mensaMenu = this.menuSubject.getValue();
           mensaMenu[mensa] = menu;
           this.menuSubject.next(mensaMenu);
@@ -186,12 +210,12 @@ export class StoreService {
   }
 
   private fetchReviewsAndPicturesForDish(menuItem) {
-    this.api.fetchRatings(menuItem).then(ratings => {
+    this.api.fetchRatings(menuItem).then((ratings) => {
       const menuRatings = this.menuRatingsSubject.getValue();
       menuRatings[menuItem] = ratings;
       this.menuRatingsSubject.next(menuRatings);
     });
-    this.api.fetchPictures(menuItem).then(pictures => {
+    this.api.fetchPictures(menuItem).then((pictures) => {
       const mensaPictures = this.menuPicturesSubject.getValue();
       mensaPictures[menuItem] = pictures;
       this.menuPicturesSubject.next(mensaPictures);
@@ -208,11 +232,11 @@ export class StoreService {
       selectedMensa: this.selectedMensaSubject.getValue(),
       compactMode: this.compactModeSubject.getValue(),
     };
-    localStorage.setItem('mensa-state', JSON.stringify(state));
+    localStorage.setItem("mensa-state", JSON.stringify(state));
   }
 
   private loadStateFromLocalStorage() {
-    const stateString = localStorage.getItem('mensa-state');
+    const stateString = localStorage.getItem("mensa-state");
     if (stateString) {
       const state: State = JSON.parse(stateString);
       if (state.dishes != null) {

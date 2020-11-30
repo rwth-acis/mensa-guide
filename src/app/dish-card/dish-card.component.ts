@@ -99,7 +99,6 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log(this.name, this.category);
     this.store.user.subscribe((user) => (this.user = user));
     if (this.photoFileInput) {
       this.photoFileInput.nativeElement.addEventListener("change", (e) =>

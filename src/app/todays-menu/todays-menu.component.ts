@@ -41,7 +41,6 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
     this.store.startPolling();
     this.store.menu.subscribe((menu) => {
       this.menu = menu;
-      console.log(menu);
     });
     this.store.menuRatings.subscribe((reviews) => (this.reviews = reviews));
     this.store.menuPictures.subscribe((pictures) => (this.pictures = pictures));

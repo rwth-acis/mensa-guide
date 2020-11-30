@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import {
   ApiService,
-  Menu,
   Picture,
   PictureCollection,
   Rating,
@@ -11,12 +10,13 @@ import {
 import { ConnectionService } from "./connection.service";
 import { distinctUntilChanged, throttleTime } from "rxjs/operators";
 import { isEqual } from "lodash";
+import { menuItem } from "./models/menu";
 
 export interface MensaMenus {
-  vita: Menu;
-  academica: Menu;
-  ahornstrasse: Menu;
-  templergraben: Menu;
+  vita: menuItem[];
+  academica: menuItem[];
+  ahornstrasse: menuItem[];
+  templergraben: menuItem[];
 }
 
 export interface MenuRatings {
@@ -54,10 +54,10 @@ export class StoreService {
     .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
     .pipe(throttleTime(1000));
   private menuSubject = new BehaviorSubject<MensaMenus>({
-    vita: { extras: {}, menus: {} },
-    academica: { extras: {}, menus: {} },
-    ahornstrasse: { extras: {}, menus: {} },
-    templergraben: { extras: {}, menus: {} },
+    vita: [],
+    academica: [],
+    ahornstrasse: [],
+    templergraben: [],
   });
   public menu = this.menuSubject
     .asObservable()
@@ -85,7 +85,9 @@ export class StoreService {
 
   constructor(private api: ApiService, private connection: ConnectionService) {
     this.loadStateFromLocalStorage();
-    connection.monitor().subscribe((online) => this.onlineSubject.next(online));
+    this.connection
+      .monitor()
+      .subscribe((online) => this.onlineSubject.next(online));
     const saveFunc = () => this.saveStateToLocalStorage();
     this.menu.subscribe(saveFunc);
     this.menuRatings.subscribe(saveFunc);
@@ -198,12 +200,12 @@ export class StoreService {
           const mensaMenu = this.menuSubject.getValue();
           mensaMenu[mensa] = menu;
           this.menuSubject.next(mensaMenu);
-          for (const menuItem of Object.values(menu.menus)) {
+          menu.forEach((menuItem) => {
             if (!processedDishes.has(menuItem)) {
               this.fetchReviewsAndPicturesForDish(menuItem);
               processedDishes.add(menuItem);
             }
-          }
+          });
         });
       }
     }

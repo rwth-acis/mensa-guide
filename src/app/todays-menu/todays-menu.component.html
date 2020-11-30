@@ -41,11 +41,11 @@
       </span>
     </mat-card-content>
   </mat-card>
-  <div *ngFor="let item of menu[selectedMensa].menus">
+  <div *ngFor="let item of menu[selectedMensa]">
     <app-dish-card
       *ngIf="!isFiltered(item.value) || !isFiltered(item.key)"
-      [name]="item.value"
-      [category]="item.type"
+      [name]="item.name"
+      [category]="item.category"
       [reviewCollection]="
         reviews.hasOwnProperty(item.value) ? reviews[item.value] : {}
       "

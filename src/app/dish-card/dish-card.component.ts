@@ -50,7 +50,7 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   carouselPlaceholder = false;
   initialized = false;
   user;
-  private numReviews: number;
+  numReviews: number;
 
   constructor(
     private store: StoreService,

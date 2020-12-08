@@ -1,4 +1,8 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { menuItem } from "../models/menu";
 import {
   MensaMenus,
   MenuPictures,
@@ -13,6 +17,7 @@ import {
 })
 export class TodaysMenuComponent implements OnInit, OnDestroy {
   menu: MensaMenus;
+  menu$: Observable<MensaMenus>; //menu which should be displayed
   reviews: MenuRatings;
   pictures: MenuPictures;
   selectedMensa: string;
@@ -39,7 +44,8 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
       (compactMode) => (this.compactMode = compactMode)
     );
     this.store.startPolling();
-    this.store.menu.subscribe((menu) => {
+    this.menu$ = this.store.menu;
+    this.menu$.subscribe((menu) => {
       this.menu = menu;
     });
     this.store.menuRatings.subscribe((reviews) => (this.reviews = reviews));
@@ -57,20 +63,15 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   }
 
   isFiltered(name: string) {
-    if (this.filter) {
-      if (!name) {
-        return false;
-      }
-      let filterArr = this.filter.split(/(\s+)/);
-      filterArr = filterArr.filter(
-        (element) => element !== "" && element !== " "
-      );
-      return !filterArr.some((element) => {
-        const nameLowerCase = name.toLowerCase();
-        const elementLowerCase = element.toLowerCase();
-        return nameLowerCase.includes(elementLowerCase);
-      });
-    }
-    return false;
+    if (!this.filter || !name) return false;
+    let filterArr = this.filter.split(/(\s+)/);
+    filterArr = filterArr.filter(
+      (element) => element !== "" && element !== " "
+    );
+    return !filterArr.some((element) => {
+      const nameLowerCase = name.toLowerCase();
+      const elementLowerCase = element.toLowerCase();
+      return nameLowerCase.includes(elementLowerCase);
+    });
   }
 }

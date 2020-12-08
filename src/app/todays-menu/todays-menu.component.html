@@ -44,7 +44,7 @@
   </mat-card>
   <div *ngFor="let item of menu[selectedMensa]">
     <app-dish-card
-      *ngIf="!isFiltered(item.value) || !isFiltered(item.key)"
+      *ngIf="!isFiltered(item.name) || !isFiltered(item.category)"
       [name]="item.name"
       [category]="item.category"
       [reviewCollection]="

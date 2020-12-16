@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Dish } from "../models/menu";
 import {
   MensaMenus,
   MenuPictures,
@@ -12,7 +13,7 @@ import {
   styleUrls: ["./dishes.component.scss"],
 })
 export class DishesComponent implements OnInit, OnDestroy {
-  dishes: string[];
+  dishes: Dish[];
   menu: MensaMenus;
   reviews: MenuRatings;
   pictures: MenuPictures;

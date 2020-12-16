@@ -3,7 +3,7 @@ import { NGXLogger } from "ngx-logger";
 import { environment } from "../environments/environment";
 import { merge } from "lodash";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { menuItem } from "./models/menu";
+import { Dish, menuItem } from "./models/menu";
 
 export interface Rating {
   author: string;
@@ -15,7 +15,7 @@ export interface Rating {
 
 export interface RatingCollection {
   // user ID
-  [key: string]: Rating;
+  [key: number]: Rating;
 }
 
 export interface Picture {
@@ -112,13 +112,13 @@ export class ApiService {
     return this.http.request<T>(options.method, url, ngHttpOptions).toPromise();
   }
 
-  async fetchDishes(): Promise<string[]> {
+  async fetchDishes(): Promise<Dish[]> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH
     );
-    return this.makeRequest<string[]>(url);
+    return this.makeRequest<Dish[]>(url);
   }
 
   async fetchMenu(mensa: string): Promise<menuItem[]> {
@@ -130,23 +130,23 @@ export class ApiService {
     return this.makeRequest<menuItem[]>(url);
   }
 
-  async fetchRatings(dish: string): Promise<RatingCollection> {
+  async fetchRatings(dishId: number): Promise<RatingCollection> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      encodeURIComponent(dish),
+      dishId,
       this.MENSA_SERVICE_RATINGS_PATH
     );
     return this.makeRequest<RatingCollection>(url);
   }
 
-  async fetchPictures(dish: string): Promise<PictureCollection> {
+  async fetchPictures(dishId: number): Promise<PictureCollection> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      encodeURIComponent(dish),
+      dishId,
       this.MENSA_SERVICE_PICTURES_PATH
     );
     return this.makeRequest<PictureCollection>(url);

@@ -10,7 +10,7 @@ import {
 import { ConnectionService } from "./connection.service";
 import { distinctUntilChanged, throttleTime } from "rxjs/operators";
 import { isEqual } from "lodash";
-import { menuItem } from "./models/menu";
+import { Dish, menuItem } from "./models/menu";
 
 export interface MensaMenus {
   vita: menuItem[];
@@ -30,7 +30,7 @@ export interface MenuPictures {
 }
 
 export interface State {
-  dishes: string[];
+  dishes: Dish[];
   menus: MensaMenus;
   ratings: MenuRatings;
   pictures: MenuPictures;
@@ -48,7 +48,7 @@ export class StoreService {
     { name: "Ahornstraße", id: "ahornstrasse" },
     { name: "Vita", id: "vita" },
   ];
-  private dishesSubject = new BehaviorSubject<string[]>([]);
+  private dishesSubject = new BehaviorSubject<Dish[]>([]);
   public dishes = this.dishesSubject
     .asObservable()
     .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
@@ -142,7 +142,7 @@ export class StoreService {
         const pictures = this.menuPicturesSubject.getValue();
         pictures[dish] = updatedPictures;
         this.menuPicturesSubject.next(pictures);
-        resolve();
+        Promise.resolve();
       });
     });
   }
@@ -153,7 +153,7 @@ export class StoreService {
         const pictures = this.menuPicturesSubject.getValue();
         pictures[dish] = updatedPictures;
         this.menuPicturesSubject.next(pictures);
-        resolve();
+        Promise.resolve();
       });
     });
   }
@@ -164,7 +164,7 @@ export class StoreService {
         const reviews = this.menuRatingsSubject.getValue();
         reviews[dish] = updatedRatings;
         this.menuRatingsSubject.next(reviews);
-        resolve();
+        Promise.resolve();
       });
     });
   }
@@ -175,7 +175,7 @@ export class StoreService {
         const reviews = this.menuRatingsSubject.getValue();
         reviews[dish] = updatedRatings;
         this.menuRatingsSubject.next(reviews);
-        resolve();
+        Promise.resolve();
       });
     });
   }
@@ -189,7 +189,7 @@ export class StoreService {
         if (!todaysMenuOnly) {
           for (const menuItem of dishes) {
             if (!processedDishes.has(menuItem)) {
-              this.fetchReviewsAndPicturesForDish(menuItem);
+              this.fetchReviewsAndPicturesForDish(menuItem.id);
               processedDishes.add(menuItem);
             }
           }
@@ -202,7 +202,7 @@ export class StoreService {
           this.menuSubject.next(mensaMenu);
           menu.forEach((menuItem) => {
             if (!processedDishes.has(menuItem)) {
-              this.fetchReviewsAndPicturesForDish(menuItem);
+              this.fetchReviewsAndPicturesForDish(menuItem.id);
               processedDishes.add(menuItem);
             }
           });
@@ -211,15 +211,15 @@ export class StoreService {
     }
   }
 
-  private fetchReviewsAndPicturesForDish(menuItem) {
-    this.api.fetchRatings(menuItem).then((ratings) => {
+  private fetchReviewsAndPicturesForDish(dishid: number) {
+    this.api.fetchRatings(dishid).then((ratings) => {
       const menuRatings = this.menuRatingsSubject.getValue();
-      menuRatings[menuItem] = ratings;
+      menuRatings[dishid] = ratings;
       this.menuRatingsSubject.next(menuRatings);
     });
-    this.api.fetchPictures(menuItem).then((pictures) => {
+    this.api.fetchPictures(dishid).then((pictures) => {
       const mensaPictures = this.menuPicturesSubject.getValue();
-      mensaPictures[menuItem] = pictures;
+      mensaPictures[dishid] = pictures;
       this.menuPicturesSubject.next(mensaPictures);
     });
   }

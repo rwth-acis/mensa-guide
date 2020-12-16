@@ -10,3 +10,8 @@ export class menuItem {
     others: number;
   };
 }
+
+export class Dish {
+  name: string;
+  id: number;
+}

@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Dish, menuItem } from "./models/menu";
 import { Rating } from "./models/rating";
 import { Picture } from "./models/picture";
+import { tap, timeout } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -88,7 +89,15 @@ export class ApiService {
     if (options.body) {
       ngHttpOptions.body = options.body;
     }
-    return this.http.request<T>(options.method, url, ngHttpOptions).toPromise();
+    return this.http
+      .request<T>(options.method, url, ngHttpOptions)
+      .pipe(
+        timeout(120000),
+        tap((e) => {
+          console.error(e);
+        })
+      )
+      .toPromise();
   }
 
   async fetchDishes(): Promise<Dish[]> {
@@ -133,12 +142,12 @@ export class ApiService {
     return this.makeRequest<Picture[]>(url);
   }
 
-  async addRating(dish: string, rating: Rating): Promise<Rating> {
+  async addRating(dishId: number, rating: Rating): Promise<Rating> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      encodeURIComponent(dish),
+      dishId.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
     return this.makeRequest<Rating>(url, {

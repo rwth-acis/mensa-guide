@@ -15,3 +15,9 @@ export class Dish {
   name: string;
   id: number;
 }
+
+export interface MensaMenus {
+  vita: menuItem[];
+  academica: menuItem[];
+  ahornstrasse: menuItem[];
+}

@@ -93,19 +93,20 @@ export class StoreService {
   }
 
   public get selectedDish() {
-    return this.selectedDish$.getValue();
+    return this.selectedDish$.asObservable();
   }
   //Setters
-  set User(user) {
+  setUser(user) {
     this.user$.next(user);
     this.saveStateToLocalStorage();
   }
 
-  set SelectedMensa(mensa) {
+  setSelectedMensa(mensa) {
     this.selectedMensa$.next(mensa);
   }
 
-  set SelectedDish(dish: Dish) {
+  setSelectedDish(dish: Dish) {
+    this.selectedDish$.next(dish);
     this.fetchReviewsAndPicturesForDish(dish.id);
   }
 
@@ -124,11 +125,11 @@ export class StoreService {
   //   this.intervalHandle = null;
   // }
 
-  async addPicture(dish: string, picture: Picture) {
+  async addPicture(dishId: number, picture: Picture) {
     return new Promise((resolve) => {
-      this.api.addPicture(dish, picture).then((updatedPictures) => {
+      this.api.addPicture(dishId, picture).then((updatedPictures) => {
         const pictures = this.menuPictures$.getValue();
-        pictures[dish] = updatedPictures;
+        pictures[dishId] = updatedPictures;
         this.menuPictures$.next(pictures);
         Promise.resolve();
       });
@@ -157,11 +158,11 @@ export class StoreService {
     });
   }
 
-  async deleteReview(dish: string) {
+  async deleteReview(dishId: number) {
     return new Promise((resolve) => {
-      this.api.deleteRating(dish).then((updatedRatings) => {
+      this.api.deleteRating(dishId).then((updatedRatings) => {
         const reviews = this.menuRatings$.getValue();
-        reviews[dish] = updatedRatings;
+        //reviews[dishId] = updatedRatings;
         this.menuRatings$.next(reviews);
         Promise.resolve();
       });

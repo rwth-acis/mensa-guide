@@ -2,13 +2,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { menuItem } from "../models/menu";
-import {
-  MensaMenus,
-  MenuPictures,
-  MenuRatings,
-  StoreService,
-} from "../store.service";
+import { MensaMenus, menuItem } from "../models/menu";
+import { Picture } from "../models/picture";
+import { Rating } from "../models/rating";
+import { StoreService } from "../store.service";
 
 @Component({
   selector: "app-todays-menu",
@@ -18,11 +15,11 @@ import {
 export class TodaysMenuComponent implements OnInit, OnDestroy {
   menu: MensaMenus;
   menu$: Observable<MensaMenus>; //menu which should be displayed
-  reviews: MenuRatings;
-  pictures: MenuPictures;
+  reviews: Rating[];
+  pictures: Picture[];
   selectedMensa: string;
   mensas: { name: string; id: string }[];
-  compactMode = false;
+  compactMode = true;
   filter = "";
 
   constructor(private store: StoreService) {}
@@ -33,17 +30,17 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   }
 
   onCompactToggled() {
-    this.store.setCompactMode(!this.compactMode);
+    //  this.store.setCompactMode(!this.compactMode);
   }
 
   ngOnInit() {
     this.store.selectedMensa.subscribe(
       (selectedMensa) => (this.selectedMensa = selectedMensa)
     );
-    this.store.compactMode.subscribe(
-      (compactMode) => (this.compactMode = compactMode)
-    );
-    this.store.startPolling();
+    // this.store.compactMode.subscribe(
+    //   (compactMode) => (this.compactMode = compactMode)
+    // );
+    // this.store.startPolling();
     this.menu$ = this.store.menu;
     this.menu$.subscribe((menu) => {
       this.menu = menu;
@@ -59,7 +56,7 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.store.stopPolling();
+    //this.store.stopPolling();
   }
 
   isFiltered(name: string) {

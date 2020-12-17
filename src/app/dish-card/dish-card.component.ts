@@ -11,9 +11,12 @@ import { StoreService } from "../store.service";
 import * as Compress from "compress.js";
 import { MatProgressButtonOptions } from "mat-progress-buttons";
 import { MatDialog, MatSnackBar } from "@angular/material";
-import { Picture, PictureCollection, RatingCollection } from "../api.service";
+
 import { ReviewsComponent } from "../reviews/reviews.component";
 import { meanBy } from "lodash";
+import { Dish } from "../models/menu";
+import { Rating } from "../models/rating";
+import { Picture } from "../models/picture";
 
 @Component({
   selector: "app-dish-card",
@@ -21,12 +24,10 @@ import { meanBy } from "lodash";
   styleUrls: ["./dish-card.component.scss"],
 })
 export class DishCardComponent implements OnChanges, AfterViewInit {
-  @Input() name: string;
+  @Input() dish: Dish;
   @Input() category: string;
-  @Input() reviewCollection: RatingCollection = {};
-  @Input() pictureCollection: PictureCollection = {};
   @Input() compact = false;
-  expanded = false;
+  isExpanded = false;
   carouselData: Picture[] = [
     { image: "assets/placeholders/dish-placeholder.png", author: "" },
   ];
@@ -66,25 +67,28 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
         this.uploadButtonOpts.text = "LOGIN TO UPLOAD";
       }
     });
+    this.store.selectedDish.subscribe((dish) => {
+      if (!this.dish || this.dish.id !== dish.id) {
+        this.isExpanded = false; //close the card if user opened another one
+      }
+    });
   }
 
   private static async extractImagesFromPictureCollection(
-    pictures: PictureCollection
+    pictures: Picture[]
   ): Promise<Picture[]> {
     if (pictures == null) {
-      pictures = {};
+      pictures = [];
     }
     const imageData = [];
-    for (const pictureArray of Object.values(pictures)) {
-      for (const picture of pictureArray) {
-        imageData.push(picture);
-      }
+    for (const picture of pictures) {
+      imageData.push(picture);
     }
-    DishCardComponent.shuffle(imageData);
+    this.shuffle(imageData);
     return imageData;
   }
 
-  private static shuffle(arr) {
+  private static shuffle(arr: any[]) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -105,31 +109,12 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
         this.uploadPhoto(e.target.files)
       );
     }
-
-    setTimeout((_) =>
-      DishCardComponent.extractImagesFromPictureCollection(
-        this.pictureCollection
-      ).then((imageData) => {
-        if (imageData.length === 0) {
-          imageData = [
-            { image: "assets/placeholders/dish-placeholder.png", author: "" },
-          ];
-          this.carouselPlaceholder = true;
-        } else {
-          this.carouselPlaceholder = false;
-        }
-        this.carouselData = imageData;
-        this.initialized = true;
-      })
-    );
-    setTimeout((_) => this.calculateAverageStars());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.initialized) {
       if (changes.pictureCollection) {
-        const pictures: PictureCollection =
-          changes.pictureCollection.currentValue;
+        const pictures: Picture[] = changes.pictureCollection.currentValue;
         DishCardComponent.extractImagesFromPictureCollection(pictures).then(
           (imageData) => {
             if (imageData.length === 0) {
@@ -147,26 +132,26 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
           }
         );
       }
-      if (changes.reviewCollection) {
-        this.calculateAverageStars();
-      }
     }
   }
 
   openReviewDialog(): void {
     this.dialog.open(ReviewsComponent, {
       width: "80%",
-      data: { dish: this.name },
+      data: { dish: this.dish.name },
     });
   }
 
-  isExpanded() {
-    return !this.compact || this.expanded;
-  }
+  // isExpanded() {
+  //   return !this.compact || this.expanded;
+  // }
 
   toggleExpanded() {
-    if (this.compact) {
-      this.expanded = !this.expanded;
+    console.log("toggle");
+
+    this.isExpanded = !this.isExpanded;
+    if (this.isExpanded === true) {
+      this.store.setSelectedDish(this.dish);
     }
   }
 
@@ -180,15 +165,16 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private calculateAverageStars() {
-    const reviews = Object.values(this.reviewCollection);
-    if (reviews.length === 0) {
-      this.averageStars = null;
-      return;
-    }
-    this.averageStars = Math.round(meanBy(reviews, (review) => review.stars));
-    this.numReviews = reviews.length;
-  }
+  // private calculateAverageStars() {
+  //   if (!this.reviewCollection) return;
+  //   const reviews = Object.values(this.reviewCollection);
+  //   if (!reviews || reviews.length === 0) {
+  //     this.averageStars = null;
+  //     return;
+  //   }
+  //   this.averageStars = Math.round(meanBy(reviews, (review) => review.stars));
+  //   this.numReviews = reviews.length;
+  // }
 
   private uploadPhoto(fileList: FileList) {
     this.uploadButtonOpts.active = true;
@@ -212,7 +198,7 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
             () => {
               const image = reader.result.toString();
               this.store
-                .addPicture(this.name, { image, author: null })
+                .addPicture(this.dish.id, { image, author: null })
                 .then(() => {
                   this.uploadButtonOpts.active = false;
                   this.snackBar.open(

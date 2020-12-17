@@ -106,6 +106,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.router.navigate(["/"]);
       });
     }
-    this.store.User(user);
+    this.store.setUser(user);
   }
 }

@@ -1,11 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Dish } from "../models/menu";
-import {
-  MensaMenus,
-  MenuPictures,
-  MenuRatings,
-  StoreService,
-} from "../store.service";
+import { Dish, MensaMenus } from "../models/menu";
+import { Picture } from "../models/picture";
+import { Rating } from "../models/rating";
+import { StoreService } from "../store.service";
 
 @Component({
   selector: "app-dishes",
@@ -15,33 +12,32 @@ import {
 export class DishesComponent implements OnInit, OnDestroy {
   dishes: Dish[];
   menu: MensaMenus;
-  reviews: MenuRatings;
-  pictures: MenuPictures;
-  compactMode = false;
+  reviews: Rating[];
+  pictures: Picture[];
+  compactMode = true;
   filter = "";
 
   constructor(private store: StoreService) {}
 
   ngOnInit() {
-    this.store.startPolling(false);
+    //this.store.startPolling(false);
     this.store.dishes.subscribe((dishes) => {
       this.dishes = dishes;
-      console.log(dishes);
     });
     this.store.menu.subscribe((menu) => (this.menu = menu));
     this.store.menuRatings.subscribe((reviews) => (this.reviews = reviews));
     this.store.menuPictures.subscribe((pictures) => (this.pictures = pictures));
-    this.store.compactMode.subscribe(
-      (compactMode) => (this.compactMode = compactMode)
-    );
+    // this.store.compactMode.subscribe(
+    //   (compactMode) => (this.compactMode = compactMode)
+    // );
   }
 
   ngOnDestroy(): void {
-    this.store.stopPolling();
+    //this.store.stopPolling();
   }
 
   onCompactToggled() {
-    this.store.setCompactMode(!this.compactMode);
+    //this.store.setCompactMode(!this.compactMode);
   }
 
   isFiltered(name: string) {

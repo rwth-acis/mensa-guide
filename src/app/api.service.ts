@@ -4,29 +4,8 @@ import { environment } from "../environments/environment";
 import { merge } from "lodash";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Dish, menuItem } from "./models/menu";
-
-export interface Rating {
-  author: string;
-  stars: number;
-  comment: string;
-  mensa: string;
-  timestamp: string;
-}
-
-export interface RatingCollection {
-  // user ID
-  [key: number]: Rating;
-}
-
-export interface Picture {
-  image: string;
-  author: string;
-}
-
-export interface PictureCollection {
-  // user ID
-  [key: string]: Picture[];
-}
+import { Rating } from "./models/rating";
+import { Picture } from "./models/picture";
 
 @Injectable({
   providedIn: "root",
@@ -130,29 +109,31 @@ export class ApiService {
     return this.makeRequest<menuItem[]>(url);
   }
 
-  async fetchRatings(dishId: number): Promise<RatingCollection> {
+  async fetchRatings(dishId: number): Promise<Rating[]> {
+    console.log("fetch rating for dish ", dishId);
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      dishId,
+      dishId.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
-    return this.makeRequest<RatingCollection>(url);
+    return this.makeRequest<Rating[]>(url);
   }
 
-  async fetchPictures(dishId: number): Promise<PictureCollection> {
+  async fetchPictures(dishId: number): Promise<Picture[]> {
+    console.log("fetch rating for dish ", dishId);
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      dishId,
+      dishId.toString(),
       this.MENSA_SERVICE_PICTURES_PATH
     );
-    return this.makeRequest<PictureCollection>(url);
+    return this.makeRequest<Picture[]>(url);
   }
 
-  async addRating(dish: string, rating: Rating): Promise<RatingCollection> {
+  async addRating(dish: string, rating: Rating): Promise<Rating> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -160,41 +141,38 @@ export class ApiService {
       encodeURIComponent(dish),
       this.MENSA_SERVICE_RATINGS_PATH
     );
-    return this.makeRequest<RatingCollection>(url, {
+    return this.makeRequest<Rating>(url, {
       method: "POST",
       body: JSON.stringify(rating),
     });
   }
 
-  async deleteRating(dish: string): Promise<RatingCollection> {
+  async deleteRating(dishid: number): Promise<boolean> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      encodeURIComponent(dish),
+      dishid.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
-    return this.makeRequest<RatingCollection>(url, { method: "DELETE" });
+    return this.makeRequest<boolean>(url, { method: "DELETE" });
   }
 
-  async addPicture(dish: string, picture: Picture): Promise<PictureCollection> {
+  async addPicture(dishid: number, picture: Picture): Promise<Picture> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      encodeURIComponent(dish),
+      dishid.toString(),
       this.MENSA_SERVICE_PICTURES_PATH
     );
-    return this.makeRequest<PictureCollection>(url, {
+    return this.makeRequest<Picture>(url, {
       method: "POST",
       body: JSON.stringify(picture),
     });
   }
 
-  async deletePicture(
-    dish: string,
-    picture: Picture
-  ): Promise<PictureCollection> {
+  async deletePicture(dish: string, picture: Picture): Promise<boolean> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -202,7 +180,7 @@ export class ApiService {
       encodeURIComponent(dish),
       this.MENSA_SERVICE_PICTURES_PATH
     );
-    return this.makeRequest<PictureCollection>(url, {
+    return this.makeRequest<boolean>(url, {
       method: "DELETE",
       body: JSON.stringify(picture),
     });

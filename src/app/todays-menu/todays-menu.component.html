@@ -11,23 +11,13 @@
 </mat-form-field>
 
 <div id="menu-controls">
-  <mat-form-field [matAutocomplete]="auto" class="dishes-filter">
+  <mat-form-field class="dishes-filter">
     <input
       matInput
       placeholder="Filter by Dish or Counter"
       [(ngModel)]="filter"
     />
   </mat-form-field>
-
-  <mat-slide-toggle
-    class="compact-toggle"
-    labelPosition="before"
-    color="primary"
-    [checked]="compactMode"
-    (toggleChange)="onCompactToggled()"
-  >
-    Compact
-  </mat-slide-toggle>
 </div>
 
 <div *ngIf="selectedMensa">
@@ -42,17 +32,11 @@
       </span>
     </mat-card-content>
   </mat-card>
-  <div *ngFor="let item of menu[selectedMensa]">
+  <div *ngFor="let dish of menu[selectedMensa]">
     <app-dish-card
-      *ngIf="!isFiltered(item.name) || !isFiltered(item.category)"
-      [name]="item.name"
-      [category]="item.category"
-      [reviewCollection]="
-        reviews.hasOwnProperty(item.value) ? reviews[item.value] : {}
-      "
-      [pictureCollection]="
-        pictures.hasOwnProperty(item.value) ? pictures[item.value] : {}
-      "
+      *ngIf="!isFiltered(dish.name) || !isFiltered(dish.category)"
+      [dish]="dish"
+      [category]="dish.category"
       [compact]="compactMode"
     ></app-dish-card>
   </div>

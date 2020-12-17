@@ -20,9 +20,7 @@
 <div *ngFor="let dish of dishes">
   <app-dish-card
     *ngIf="!isFiltered(dish.name)"
-    [name]="dish.name"
-    [reviewCollection]="reviews.hasOwnProperty(dish.id) ? reviews[dish] : {}"
-    [pictureCollection]="pictures.hasOwnProperty(dish.id) ? pictures[dish] : {}"
+    [dish]="dish"
     [compact]="compactMode"
   ></app-dish-card>
 </div>

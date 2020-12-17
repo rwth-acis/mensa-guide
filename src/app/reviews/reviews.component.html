@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>Reviews for "{{ data.dish }}"</h1>
+<h1 mat-dialog-title>Reviews for "{{ data.dish.name }}"</h1>
 <div mat-dialog-content>
   <div *ngIf="!editMode">
     <p *ngIf="sortedReviews.length === 0">
-      "{{ data.dish }}" has no reviews yet. <br />
+      "{{ data.dish.name }}" has no reviews yet. <br />
       Did you ever have this dish? Then please tell us about it by writing the
       first review!
     </p>

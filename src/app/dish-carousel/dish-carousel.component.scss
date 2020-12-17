@@ -1,14 +1,14 @@
-$transition_time:.2s;
+$transition_time: 0.2s;
 
 .carousel {
-  color:black;
+  color: black;
   text-shadow: white 0px 0px 10px;
   .content {
     display: flex;
 
     .item {
       width: 100%;
-      padding: .5em;
+      padding: 0.5em;
       display: block;
       opacity: 0.5;
 
@@ -17,24 +17,23 @@ $transition_time:.2s;
       &.visible {
         opacity: 1;
       }
-      .author{
+      .author {
         position: relative;
         top: 10px;
         left: 10px;
       }
-      .delete-link{
+      .delete-link {
         color: red;
       }
       .img {
         width: 100%;
-        height: 400px;
+        min-height: 30vh;
+        max-height: 70vh;
         display: block;
         background-size: cover;
         background-position: center;
       }
     }
-
-
   }
 
   .ball {

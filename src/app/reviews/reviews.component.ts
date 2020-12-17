@@ -5,9 +5,10 @@ import { MAT_DIALOG_DATA, MatSnackBar } from "@angular/material";
 import { ReviewFormComponent } from "../review-form/review-form.component";
 import * as moment from "moment";
 import { Rating } from "../models/rating";
+import { Dish } from "../models/menu";
 
 export interface ReviewsDialogData {
-  dish: string;
+  dish: Dish;
 }
 
 @Component({
@@ -49,7 +50,7 @@ export class ReviewsComponent implements OnInit {
   }
 
   deleteReview() {
-    this.store.deleteReview(this.data.dish).then(() =>
+    this.store.deleteReview(this.data.dish.id).then(() =>
       this.snackBar.open("Your review has been deleted.", null, {
         duration: 3000,
       })

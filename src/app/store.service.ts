@@ -27,7 +27,7 @@ export class StoreService {
     { name: "Ahornstraße", id: "ahornstrasse" },
     { name: "Vita", id: "vita" },
   ];
-  private intervalHandle: NodeJS.Timer;
+  //private intervalHandle: NodeJS.Timer;
 
   //Subjects
   private selectedMensa$ = new BehaviorSubject<string>(null);
@@ -38,8 +38,8 @@ export class StoreService {
     academica: [],
     ahornstrasse: [],
   });
-  private menuRatings$ = new BehaviorSubject<Rating[]>([]);
-  private menuPictures$ = new BehaviorSubject<Picture[]>([]);
+  private menuRatings$ = new BehaviorSubject<Rating[]>(null);
+  private menuPictures$ = new BehaviorSubject<Picture[]>(null);
   private online$ = new BehaviorSubject<boolean>(true);
   private compactMode$ = new BehaviorSubject<boolean>(false);
   private selectedDish$ = new BehaviorSubject<Dish>(null);
@@ -147,11 +147,11 @@ export class StoreService {
     });
   }
 
-  async addReview(dish: string, review: Rating) {
+  async addReview(dishId: number, review: Rating) {
     return new Promise((resolve) => {
-      this.api.addRating(dish, review).then((updatedRatings) => {
+      this.api.addRating(dishId, review).then((updatedRatings) => {
         const reviews = this.menuRatings$.getValue();
-        reviews[dish] = updatedRatings;
+        reviews[dishId] = updatedRatings;
         this.menuRatings$.next(reviews);
         Promise.resolve();
       });
@@ -201,12 +201,22 @@ export class StoreService {
   // }
 
   public fetchReviewsAndPicturesForDish(dishid: number) {
-    this.api.fetchRatings(dishid).then((ratings) => {
-      this.menuRatings$.next(ratings);
-    });
-    this.api.fetchPictures(dishid).then((pictures) => {
-      this.menuPictures$.next(pictures);
-    });
+    this.api
+      .fetchRatings(dishid)
+      .then((ratings) => {
+        this.menuRatings$.next(ratings);
+      })
+      .catch((error) => {
+        this.menuRatings$.next(null);
+      });
+    this.api
+      .fetchPictures(dishid)
+      .then((pictures) => {
+        this.menuPictures$.next(pictures);
+      })
+      .catch((error) => {
+        this.menuPictures$.next(null);
+      });
   }
 
   private saveStateToLocalStorage() {

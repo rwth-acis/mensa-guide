@@ -7,6 +7,7 @@ import { Dish, menuItem } from "./models/menu";
 import { Rating } from "./models/rating";
 import { Picture } from "./models/picture";
 import { tap, timeout } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -32,7 +33,7 @@ export class ApiService {
     this.userCredentials = null;
   }
 
-  async makeRequest<T>(
+  makeRequest<T>(
     url: string,
     options: {
       method?: string;
@@ -89,21 +90,18 @@ export class ApiService {
     if (options.body) {
       ngHttpOptions.body = options.body;
     }
-    return this.http
-      .request<T>(options.method, url, ngHttpOptions)
-      .pipe(
-        timeout(120000),
-        tap(
-          () => {},
-          (e) => {
-            console.error(e);
-          }
-        )
+    return this.http.request<T>(options.method, url, ngHttpOptions).pipe(
+      timeout(120000),
+      tap(
+        () => {},
+        (e) => {
+          console.error(e);
+        }
       )
-      .toPromise();
+    );
   }
 
-  async fetchDishes(): Promise<Dish[]> {
+  fetchDishes(): Observable<Dish[]> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -112,7 +110,7 @@ export class ApiService {
     return this.makeRequest<Dish[]>(url);
   }
 
-  async fetchMenu(mensa: string): Promise<menuItem[]> {
+  fetchMenu(mensa: string): Observable<menuItem[]> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -121,7 +119,7 @@ export class ApiService {
     return this.makeRequest<menuItem[]>(url);
   }
 
-  async fetchRatings(dishId: number): Promise<Rating[]> {
+  fetchRatings(dishId: number): Observable<Rating[]> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -132,7 +130,7 @@ export class ApiService {
     return this.makeRequest<Rating[]>(url);
   }
 
-  async fetchPictures(dishId: number): Promise<Picture[]> {
+  fetchPictures(dishId: number): Observable<Picture[]> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -143,7 +141,7 @@ export class ApiService {
     return this.makeRequest<Picture[]>(url);
   }
 
-  async addRating(dishId: number, rating: Rating): Promise<Rating> {
+  addRating(dishId: number, rating: Rating): Observable<Rating> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -157,7 +155,7 @@ export class ApiService {
     });
   }
 
-  async deleteRating(dishid: number): Promise<boolean> {
+  deleteRating(dishid: number): Observable<boolean> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -168,7 +166,7 @@ export class ApiService {
     return this.makeRequest<boolean>(url, { method: "DELETE" });
   }
 
-  async addPicture(dishid: number, picture: Picture): Promise<Picture> {
+  addPicture(dishid: number, picture: Picture): Observable<Picture> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -182,7 +180,7 @@ export class ApiService {
     });
   }
 
-  async deletePicture(dish: string, picture: Picture): Promise<boolean> {
+  deletePicture(dish: string, picture: Picture): Observable<boolean> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,

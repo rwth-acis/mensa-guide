@@ -102,6 +102,8 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.initialized = false;
         }
+      } else {
+        this.initialized = false;
       }
     });
     this.subs.push(sub);
@@ -177,7 +179,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleExpanded() {
     this.isExpanded = !this.isExpanded;
-    if (this.isExpanded === true) {
+    if (this.isExpanded) {
       this.store.setSelectedDish(this.dish);
     }
   }

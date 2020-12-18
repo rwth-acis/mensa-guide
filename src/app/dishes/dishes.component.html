@@ -3,15 +3,16 @@
     <input matInput placeholder="Filter by Dish" [(ngModel)]="filter" />
   </mat-form-field>
 </div>
+<ng-container *ngIf="dishes$ | async as dishes">
+  <mat-card *ngIf="dishes.length === 0"
+    >No dishes yet. Check back tomorrow!</mat-card
+  >
 
-<mat-card *ngIf="dishes.length === 0"
-  >No dishes yet. Check back tomorrow!</mat-card
->
-
-<div *ngFor="let dish of dishes">
-  <app-dish-card
-    *ngIf="!isFiltered(dish.name)"
-    [dish]="dish"
-    [compact]="compactMode"
-  ></app-dish-card>
-</div>
+  <div *ngFor="let dish of dishes">
+    <app-dish-card
+      *ngIf="!isFiltered(dish.name)"
+      [dish]="dish"
+      [compact]="compactMode"
+    ></app-dish-card>
+  </div>
+</ng-container>

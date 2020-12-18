@@ -32,7 +32,7 @@
       </span>
     </mat-card-content>
   </mat-card>
-  <div *ngFor="let dish of menu[selectedMensa]">
+  <div *ngFor="let dish of menu">
     <app-dish-card
       *ngIf="!isFiltered(dish.name) || !isFiltered(dish.category)"
       [dish]="dish"

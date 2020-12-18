@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Dish, MensaMenus } from "../models/menu";
+import { Observable } from "rxjs";
+import { Dish, MensaMenus, menuItem } from "../models/menu";
 import { Picture } from "../models/picture";
 import { Rating } from "../models/rating";
 import { StoreService } from "../store.service";
@@ -10,8 +11,8 @@ import { StoreService } from "../store.service";
   styleUrls: ["./dishes.component.scss"],
 })
 export class DishesComponent implements OnInit, OnDestroy {
-  dishes: Dish[];
-  menu: MensaMenus;
+  dishes$: Observable<Dish[]>;
+  menu: menuItem[];
   reviews: Rating[];
   pictures: Picture[];
   compactMode = true;
@@ -22,9 +23,7 @@ export class DishesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.initDishes();
     //this.store.startPolling(false);
-    this.store.dishes.subscribe((dishes) => {
-      this.dishes = dishes;
-    });
+    this.dishes$ = this.store.dishes;
     this.store.menu.subscribe((menu) => (this.menu = menu));
     this.store.menuRatings.subscribe((reviews) => (this.reviews = reviews));
     this.store.menuPictures.subscribe((pictures) => (this.pictures = pictures));

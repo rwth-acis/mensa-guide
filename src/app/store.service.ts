@@ -10,7 +10,7 @@ import { Picture } from "./models/picture";
 
 export interface State {
   dishes: Dish[];
-  menus: MensaMenus;
+  menu: menuItem[];
   ratings: Rating[];
   pictures: Picture[];
   user: object;
@@ -33,11 +33,7 @@ export class StoreService {
   private selectedMensa$ = new BehaviorSubject<string>(null);
   private user$ = new BehaviorSubject(null);
   private dishes$ = new BehaviorSubject<Dish[]>([]);
-  private menu$ = new BehaviorSubject<MensaMenus>({
-    vita: [],
-    academica: [],
-    ahornstrasse: [],
-  });
+  private menu$ = new BehaviorSubject<menuItem[]>([]);
   private menuRatings$ = new BehaviorSubject<Rating[]>(null);
   private menuPictures$ = new BehaviorSubject<Picture[]>(null);
   private online$ = new BehaviorSubject<boolean>(true);
@@ -45,18 +41,15 @@ export class StoreService {
   private selectedDish$ = new BehaviorSubject<Dish>(null);
 
   constructor(private api: ApiService, private connection: ConnectionService) {
-    this.loadStateFromLocalStorage();
+    //  this.loadStateFromLocalStorage();
     this.connection.monitor().subscribe((online) => this.online$.next(online));
 
-    this.initLocalStorageSave();
+    // this.initLocalStorageSave();
   }
 
   //Getters for Observables
   public get dishes() {
-    return this.dishes$
-      .asObservable()
-      .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
-      .pipe(throttleTime(1000));
+    return this.dishes$.asObservable();
   }
 
   public get menu() {
@@ -105,15 +98,13 @@ export class StoreService {
   //Setters
   setUser(user) {
     this.user$.next(user);
-    this.saveStateToLocalStorage();
+    // this.saveStateToLocalStorage();
   }
 
   setSelectedMensa(mensa) {
     this.selectedMensa$.next(mensa);
-    this.api.fetchMenu(mensa).then((menu) => {
-      const mensaMenu = this.menu$.getValue();
-      mensaMenu[mensa] = menu;
-      this.menu$.next(mensaMenu);
+    this.api.fetchMenu(mensa).subscribe((menu) => {
+      this.menu$.next(menu);
     });
   }
 
@@ -138,14 +129,14 @@ export class StoreService {
   // }
 
   initDishes() {
-    this.api.fetchDishes().then((dishes) => {
+    this.api.fetchDishes().subscribe((dishes) => {
       this.dishes$.next(dishes);
     });
   }
 
   async addPicture(dishId: number, picture: Picture) {
     return new Promise((resolve) => {
-      this.api.addPicture(dishId, picture).then((updatedPictures) => {
+      this.api.addPicture(dishId, picture).subscribe((updatedPictures) => {
         const pictures = this.menuPictures$.getValue();
         pictures[dishId] = updatedPictures;
         this.menuPictures$.next(pictures);
@@ -156,7 +147,7 @@ export class StoreService {
 
   async deletePicture(dish: string, picture: Picture) {
     return new Promise((resolve) => {
-      this.api.deletePicture(dish, picture).then((updatedPictures) => {
+      this.api.deletePicture(dish, picture).subscribe((updatedPictures) => {
         const pictures = this.menuPictures$.getValue();
         pictures[dish] = updatedPictures;
         this.menuPictures$.next(pictures);
@@ -167,7 +158,7 @@ export class StoreService {
 
   async addReview(dishId: number, review: Rating) {
     return new Promise((resolve) => {
-      this.api.addRating(dishId, review).then((updatedRatings) => {
+      this.api.addRating(dishId, review).subscribe((updatedRatings) => {
         const reviews = this.menuRatings$.getValue();
         reviews[dishId] = updatedRatings;
         this.menuRatings$.next(reviews);
@@ -178,7 +169,7 @@ export class StoreService {
 
   async deleteReview(dishId: number) {
     return new Promise((resolve) => {
-      this.api.deleteRating(dishId).then((updatedRatings) => {
+      this.api.deleteRating(dishId).subscribe((updatedRatings) => {
         const reviews = this.menuRatings$.getValue();
         //reviews[dishId] = updatedRatings;
         this.menuRatings$.next(reviews);
@@ -219,88 +210,89 @@ export class StoreService {
   // }
 
   public fetchReviewsAndPicturesForDish(dishid: number) {
-    this.api
-      .fetchRatings(dishid)
-      .then((ratings) => {
+    this.api.fetchRatings(dishid).subscribe(
+      (ratings) => {
         console.log(ratings);
         this.menuRatings$.next(ratings);
-      })
-      .catch((error) => {
-        this.menuRatings$.next(null);
-      });
-    this.api
-      .fetchPictures(dishid)
-      .then((pictures) => {
+      },
+      (error) => {
+        this.menuRatings$.next([]);
+      }
+    );
+
+    this.api.fetchPictures(dishid).subscribe(
+      (pictures) => {
         this.menuPictures$.next(pictures);
-      })
-      .catch((error) => {
-        this.menuPictures$.next(null);
-      });
+      },
+      (error) => {
+        this.menuPictures$.next([]);
+      }
+    );
   }
 
-  private saveStateToLocalStorage() {
-    const state: State = {
-      dishes: this.dishes$.getValue(),
-      menus: this.menu$.getValue(),
-      ratings: this.menuRatings$.getValue(),
-      pictures: this.menuPictures$.getValue(),
-      user: this.user$.getValue(),
-      selectedMensa: this.selectedMensa$.getValue(),
-      compactMode: this.compactMode$.getValue(),
-    };
-    localStorage.setItem("mensa-state", JSON.stringify(state));
-  }
+  // private saveStateToLocalStorage() {
+  //   const state: State = {
+  //     dishes: this.dishes$.getValue(),
+  //     menu: this.menu$.getValue(),
+  //     ratings: this.menuRatings$.getValue(),
+  //     pictures: this.menuPictures$.getValue(),
+  //     user: this.user$.getValue(),
+  //     selectedMensa: this.selectedMensa$.getValue(),
+  //     compactMode: this.compactMode$.getValue(),
+  //   };
+  //   localStorage.setItem("mensa-state", JSON.stringify(state));
+  // }
 
-  private loadStateFromLocalStorage() {
-    const stateString = localStorage.getItem("mensa-state");
-    if (stateString) {
-      const state: State = JSON.parse(stateString);
+  // private loadStateFromLocalStorage() {
+  //   const stateString = localStorage.getItem("mensa-state");
+  //   if (stateString) {
+  //     const state: State = JSON.parse(stateString);
 
-      if (state.dishes) {
-        this.dishes$.next(state.dishes);
-      }
-      if (state.menus) {
-        this.menu$.next(state.menus);
-      }
-      if (state.ratings) {
-        this.menuRatings$.next(state.ratings);
-      }
-      if (state.pictures) {
-        this.menuPictures$.next(state.pictures);
-      }
-      if (state.user != null) {
-        this.user$.next(state.user);
-      }
-      if (state.selectedMensa != null) {
-        this.selectedMensa$.next(state.selectedMensa);
-      }
-      if (state.compactMode != null) {
-        this.compactMode$.next(state.compactMode);
-      }
-    }
-  }
+  //     if (state.dishes) {
+  //       this.dishes$.next(state.dishes);
+  //     }
+  //     if (state.menu) {
+  //       this.menu$.next(state.menu);
+  //     }
+  //     if (state.ratings) {
+  //       this.menuRatings$.next(state.ratings);
+  //     }
+  //     if (state.pictures) {
+  //       this.menuPictures$.next(state.pictures);
+  //     }
+  //     if (state.user != null) {
+  //       this.user$.next(state.user);
+  //     }
+  //     if (state.selectedMensa != null) {
+  //       this.selectedMensa$.next(state.selectedMensa);
+  //     }
+  //     if (state.compactMode != null) {
+  //       this.compactMode$.next(state.compactMode);
+  //     }
+  //   }
+  // }
 
   //subscribes to the app state and saves the change to the localstorage
-  initLocalStorageSave() {
-    const saveFunc = () => this.saveStateToLocalStorage();
-    this.menu.subscribe(saveFunc);
-    this.menuRatings$.subscribe(saveFunc);
-    this.menuPictures$.subscribe(saveFunc);
+  // initLocalStorageSave() {
+  //   const saveFunc = () => this.saveStateToLocalStorage();
+  //   this.menu.subscribe(saveFunc);
+  //   this.menuRatings$.subscribe(saveFunc);
+  //   this.menuPictures$.subscribe(saveFunc);
 
-    this.user.pipe(distinctUntilChanged()).subscribe((user) => {
-      if (user) {
-        this.api.setCredentials(
-          user.profile.preferred_username,
-          user.profile.sub,
-          user.access_token
-        );
-      } else {
-        this.api.resetCredentials();
-      }
-      saveFunc();
-    });
+  //   this.user.pipe(distinctUntilChanged()).subscribe((user) => {
+  //     if (user) {
+  //       this.api.setCredentials(
+  //         user.profile.preferred_username,
+  //         user.profile.sub,
+  //         user.access_token
+  //       );
+  //     } else {
+  //       this.api.resetCredentials();
+  //     }
+  //     saveFunc();
+  //   });
 
-    this.selectedMensa$.subscribe(saveFunc);
-    this.compactMode$.subscribe(saveFunc);
-  }
+  //   this.selectedMensa$.subscribe(saveFunc);
+  //   this.compactMode$.subscribe(saveFunc);
+  // }
 }

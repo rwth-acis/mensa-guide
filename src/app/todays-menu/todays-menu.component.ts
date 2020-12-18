@@ -13,8 +13,8 @@ import { StoreService } from "../store.service";
   styleUrls: ["./todays-menu.component.scss"],
 })
 export class TodaysMenuComponent implements OnInit, OnDestroy {
-  menu: MensaMenus;
-  menu$: Observable<MensaMenus>; //menu which should be displayed
+  menu: menuItem[];
+  menu$: Observable<menuItem[]>; //menu which should be displayed
   reviews: Rating[];
   pictures: Picture[];
   selectedMensa: string;

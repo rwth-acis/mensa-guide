@@ -37,6 +37,7 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
     this.store.selectedMensa.subscribe(
       (selectedMensa) => (this.selectedMensa = selectedMensa)
     );
+
     // this.store.compactMode.subscribe(
     //   (compactMode) => (this.compactMode = compactMode)
     // );

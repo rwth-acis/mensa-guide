@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, combineLatest } from "rxjs";
 import { ApiService } from "./api.service";
 import { ConnectionService } from "./connection.service";
-import { distinctUntilChanged, throttleTime } from "rxjs/operators";
+import { combineAll, distinctUntilChanged, throttleTime } from "rxjs/operators";
 import { isEqual } from "lodash";
 import { Dish, MensaMenus, menuItem } from "./models/menu";
 import { Rating } from "./models/rating";
@@ -80,6 +80,13 @@ export class StoreService {
       .pipe(throttleTime(1000));
   }
 
+  public get dishData() {
+    return combineLatest(
+      this.selectedDish,
+      this.menuPictures,
+      this.menuRatings
+    );
+  }
   public get online() {
     return this.online$.asObservable();
   }
@@ -103,6 +110,11 @@ export class StoreService {
 
   setSelectedMensa(mensa) {
     this.selectedMensa$.next(mensa);
+    this.api.fetchMenu(mensa).then((menu) => {
+      const mensaMenu = this.menu$.getValue();
+      mensaMenu[mensa] = menu;
+      this.menu$.next(mensaMenu);
+    });
   }
 
   setSelectedDish(dish: Dish) {
@@ -124,6 +136,12 @@ export class StoreService {
   //   clearInterval(this.intervalHandle);
   //   this.intervalHandle = null;
   // }
+
+  initDishes() {
+    this.api.fetchDishes().then((dishes) => {
+      this.dishes$.next(dishes);
+    });
+  }
 
   async addPicture(dishId: number, picture: Picture) {
     return new Promise((resolve) => {
@@ -204,6 +222,7 @@ export class StoreService {
     this.api
       .fetchRatings(dishid)
       .then((ratings) => {
+        console.log(ratings);
         this.menuRatings$.next(ratings);
       })
       .catch((error) => {

@@ -2,15 +2,6 @@
   <mat-form-field class="dishes-filter">
     <input matInput placeholder="Filter by Dish" [(ngModel)]="filter" />
   </mat-form-field>
-  <mat-slide-toggle
-    class="compact-toggle"
-    labelPosition="before"
-    color="primary"
-    [checked]="compactMode"
-    (toggleChange)="onCompactToggled()"
-  >
-    Compact
-  </mat-slide-toggle>
 </div>
 
 <mat-card *ngIf="dishes.length === 0"

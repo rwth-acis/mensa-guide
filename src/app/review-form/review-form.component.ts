@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Dish } from "../models/menu";
 import { Rating } from "../models/rating";
 
 import { StoreService } from "../store.service";
@@ -16,7 +17,7 @@ export class ReviewFormComponent implements OnInit {
     mensa: null,
     stars: 5,
   };
-  @Input() dish: string;
+  @Input() dish: Dish;
   mensas: { name: string; id: string }[];
 
   constructor(private store: StoreService) {
@@ -26,6 +27,6 @@ export class ReviewFormComponent implements OnInit {
   ngOnInit() {}
 
   save() {
-    this.store.addReview(this.dish, this.review);
+    this.store.addReview(this.dish.id, this.review);
   }
 }

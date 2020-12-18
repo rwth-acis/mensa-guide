@@ -93,9 +93,12 @@ export class ApiService {
       .request<T>(options.method, url, ngHttpOptions)
       .pipe(
         timeout(120000),
-        tap((e) => {
-          console.error(e);
-        })
+        tap(
+          () => {},
+          (e) => {
+            console.error(e);
+          }
+        )
       )
       .toPromise();
   }
@@ -119,7 +122,6 @@ export class ApiService {
   }
 
   async fetchRatings(dishId: number): Promise<Rating[]> {
-    console.log("fetch rating for dish ", dishId);
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -131,7 +133,6 @@ export class ApiService {
   }
 
   async fetchPictures(dishId: number): Promise<Picture[]> {
-    console.log("fetch rating for dish ", dishId);
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,

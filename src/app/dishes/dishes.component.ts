@@ -20,6 +20,7 @@ export class DishesComponent implements OnInit, OnDestroy {
   constructor(private store: StoreService) {}
 
   ngOnInit() {
+    this.store.initDishes();
     //this.store.startPolling(false);
     this.store.dishes.subscribe((dishes) => {
       this.dishes = dishes;

@@ -4,6 +4,8 @@ import {
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
+  OnInit,
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
@@ -17,13 +19,14 @@ import { meanBy } from "lodash";
 import { Dish } from "../models/menu";
 import { Rating } from "../models/rating";
 import { Picture } from "../models/picture";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-dish-card",
   templateUrl: "./dish-card.component.html",
   styleUrls: ["./dish-card.component.scss"],
 })
-export class DishCardComponent implements AfterViewInit {
+export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() dish: Dish;
   @Input() category: string;
   @Input() compact = false;
@@ -31,7 +34,7 @@ export class DishCardComponent implements AfterViewInit {
   carouselData: Picture[] = [
     { image: "assets/placeholders/dish-placeholder.png", author: "" },
   ];
-  averageStars: number = null;
+  averageStars: number;
   @ViewChild("photoUpload", { static: false })
   photoFileInput: ElementRef;
   uploadButtonOpts: MatProgressButtonOptions = {
@@ -52,13 +55,18 @@ export class DishCardComponent implements AfterViewInit {
   initialized = false;
   user;
   numReviews: number;
+  currDishId: number;
+
+  private subs: Subscription[] = [];
 
   constructor(
     private store: StoreService,
     private snackBar: MatSnackBar,
     public dialog: MatDialog
-  ) {
-    this.store.user.subscribe((user) => {
+  ) {}
+
+  ngOnInit() {
+    let sub = this.store.user.subscribe((user) => {
       if (user) {
         this.uploadButtonOpts.disabled = false;
         this.uploadButtonOpts.text = "UPLOAD PHOTO";
@@ -67,34 +75,41 @@ export class DishCardComponent implements AfterViewInit {
         this.uploadButtonOpts.text = "LOGIN TO UPLOAD";
       }
     });
-    this.store.selectedDish.subscribe((dish) => {
-      if (!this.dish || this.dish.id !== dish.id) {
-        this.isExpanded = false; //close the card if user opened another one
+    this.subs.push(sub);
+
+    sub = this.store.dishData.subscribe(([currDish, pictures, ratings]) => {
+      if (currDish && this.dish.id == currDish.id) {
+        //init data for card content if dish is selected
+        if (ratings && pictures) {
+          this.numReviews = ratings.length;
+          if (ratings.length > 0) {
+            this.averageStars =
+              ratings
+                .map((rating) => rating.stars)
+                .reduce((sum, curr) => sum + curr) / this.numReviews;
+            console.log(this.averageStars);
+          } else {
+            this.averageStars = 0;
+          }
+
+          if (pictures.length > 0) {
+            this.carouselData = DishCardComponent.shuffle(pictures);
+            this.carouselPlaceholder = false;
+          } else {
+            this.carouselPlaceholder = true;
+          }
+          this.initialized = true;
+        } else {
+          this.initialized = false;
+        }
       }
     });
-    this.store.menuPictures.subscribe((pics) => {
-      if (pics) {
-        if (pics.length > 0) {
-          this.carouselData = DishCardComponent.shuffle(pics);
-          this.carouselPlaceholder = false;
-        } else {
-          this.carouselPlaceholder = true;
-        }
-        this.initialized = true;
-      }
-    });
-    this.store.menuRatings.subscribe((ratings) => {
-      if (ratings) {
-        this.numReviews = ratings.length;
-        if (this.numReviews > 0) {
-          this.averageStars =
-            ratings
-              .map((rating) => rating.stars)
-              .reduce((sum, curr) => sum + curr) / this.numReviews;
-        } else {
-          this.averageStars = 0;
-        }
-      }
+    this.subs.push(sub);
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach((sub) => {
+      sub.unsubscribe();
     });
   }
 

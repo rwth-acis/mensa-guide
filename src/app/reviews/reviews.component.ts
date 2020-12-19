@@ -54,7 +54,7 @@ export class ReviewsComponent implements OnInit {
   }
 
   deleteReview() {
-    this.store.deleteReview(this.data.dish.id).then(() =>
+    this.store.deleteReview(this.data.dish.id).subscribe(() =>
       this.snackBar.open("Your review has been deleted.", null, {
         duration: 3000,
       })

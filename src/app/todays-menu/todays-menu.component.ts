@@ -18,7 +18,7 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   reviews: Rating[];
   pictures: Picture[];
   selectedMensa: string;
-  mensas: { name: string; id: string }[];
+  mensas: { name: string; id: number }[];
   compactMode = true;
   filter = "";
 

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Dish } from "../models/menu";
-import { Rating } from "../models/rating";
+import { Rating, ReviewForm } from "../models/rating";
 
 import { StoreService } from "../store.service";
 
@@ -10,15 +10,15 @@ import { StoreService } from "../store.service";
   styleUrls: ["./review-form.component.scss"],
 })
 export class ReviewFormComponent implements OnInit {
-  @Input() review: Rating = {
+  @Input() review: ReviewForm = {
     author: null,
     comment: "",
-    timestamp: null,
-    mensa: null,
+    mensaId: null,
     stars: 5,
+    id: null,
   };
   @Input() dish: Dish;
-  mensas: { name: string; id: string }[];
+  mensas: { name: string; id: number }[];
 
   constructor(private store: StoreService) {
     this.mensas = this.store.mensas;
@@ -27,6 +27,6 @@ export class ReviewFormComponent implements OnInit {
   ngOnInit() {}
 
   save() {
-    this.store.addReview(this.dish.id, this.review);
+    this.store.addReview(this.dish.id, this.review).subscribe();
   }
 }

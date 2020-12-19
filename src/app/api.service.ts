@@ -4,7 +4,7 @@ import { environment } from "../environments/environment";
 import { merge } from "lodash";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Dish, menuItem } from "./models/menu";
-import { Rating } from "./models/rating";
+import { Rating, ReviewForm } from "./models/rating";
 import { Picture } from "./models/picture";
 import { tap, timeout } from "rxjs/operators";
 import { Observable } from "rxjs";
@@ -141,7 +141,7 @@ export class ApiService {
     return this.makeRequest<Picture[]>(url);
   }
 
-  addRating(dishId: number, rating: Rating): Observable<Rating> {
+  addRating(dishId: number, rating: ReviewForm): Observable<ReviewForm> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
@@ -149,7 +149,7 @@ export class ApiService {
       dishId.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
-    return this.makeRequest<Rating>(url, {
+    return this.makeRequest<ReviewForm>(url, {
       method: "POST",
       body: JSON.stringify(rating),
     });

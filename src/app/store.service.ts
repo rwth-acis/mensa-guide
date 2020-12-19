@@ -2,10 +2,15 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, combineLatest } from "rxjs";
 import { ApiService } from "./api.service";
 import { ConnectionService } from "./connection.service";
-import { combineAll, distinctUntilChanged, throttleTime } from "rxjs/operators";
+import {
+  combineAll,
+  distinctUntilChanged,
+  tap,
+  throttleTime,
+} from "rxjs/operators";
 import { isEqual } from "lodash";
 import { Dish, MensaMenus, menuItem } from "./models/menu";
-import { Rating } from "./models/rating";
+import { Rating, ReviewForm } from "./models/rating";
 import { Picture } from "./models/picture";
 
 export interface State {
@@ -23,9 +28,9 @@ export interface State {
 })
 export class StoreService {
   public readonly mensas = [
-    { name: "Academica", id: "academica" },
-    { name: "Ahornstraße", id: "ahornstrasse" },
-    { name: "Vita", id: "vita" },
+    { name: "Aachen, Mensa Academica", id: 187 },
+    { name: "Aachen, Mensa Ahorn", id: 95 },
+    { name: "Aachen, Mensa Vita", id: 96 },
   ];
   //private intervalHandle: NodeJS.Timer;
 
@@ -125,48 +130,54 @@ export class StoreService {
     });
   }
 
-  async addPicture(dishId: number, picture: Picture) {
-    return new Promise((resolve) => {
-      this.api.addPicture(dishId, picture).subscribe((updatedPictures) => {
+  addPicture(dishId: number, picture: Picture) {
+    console.log("got pic", picture.image);
+    return this.api.addPicture(dishId, picture).pipe(
+      tap((updatedPictures) => {
         const pictures = this.menuPictures$.getValue();
         pictures[dishId] = updatedPictures;
         this.menuPictures$.next(pictures);
-        Promise.resolve();
-      });
-    });
+      })
+    );
   }
 
-  async deletePicture(dish: string, picture: Picture) {
-    return new Promise((resolve) => {
-      this.api.deletePicture(dish, picture).subscribe((updatedPictures) => {
-        const pictures = this.menuPictures$.getValue();
-        pictures[dish] = updatedPictures;
+  deletePicture(dish: string, picture: Picture) {
+    return this.api.deletePicture(dish, picture).pipe(
+      tap((updatedPictures) => {
+        let pictures = this.menuPictures$.getValue();
+        pictures = pictures.filter((pic) => pic != picture);
         this.menuPictures$.next(pictures);
-        Promise.resolve();
-      });
-    });
+      })
+    );
   }
 
-  async addReview(dishId: number, review: Rating) {
-    return new Promise((resolve) => {
-      this.api.addRating(dishId, review).subscribe((updatedRatings) => {
-        const reviews = this.menuRatings$.getValue();
-        reviews[dishId] = updatedRatings;
+  addReview(dishId: number, review: ReviewForm) {
+    let user = this.user$.getValue();
+    review.author = user.profile.preferred_username;
+    return this.api.addRating(dishId, review).pipe(
+      tap((newRating) => {
+        let reviews = this.menuRatings$.getValue();
+        reviews.push({
+          ...newRating,
+          timestamp: new Date(),
+          mensa: this.mensas.find((mensa) => mensa.id == newRating.mensaId)
+            .name,
+        });
         this.menuRatings$.next(reviews);
-        Promise.resolve();
-      });
-    });
+      })
+    );
   }
 
-  async deleteReview(dishId: number) {
-    return new Promise((resolve) => {
-      this.api.deleteRating(dishId).subscribe((updatedRatings) => {
-        const reviews = this.menuRatings$.getValue();
-        //reviews[dishId] = updatedRatings;
-        this.menuRatings$.next(reviews);
-        Promise.resolve();
-      });
-    });
+  deleteReview(dishId: number) {
+    return this.api.deleteRating(dishId).pipe(
+      tap((success) => {
+        if (success) {
+          let reviews = this.menuRatings$.getValue();
+          reviews.filter((review) => review.id != dishId);
+          this.menuRatings$.next(reviews);
+        }
+      })
+    );
   }
 
   // private refreshState(todaysMenuOnly = true) {
@@ -203,7 +214,6 @@ export class StoreService {
   public fetchReviewsAndPicturesForDish(dishid: number) {
     this.api.fetchRatings(dishid).subscribe(
       (ratings) => {
-        console.log(ratings);
         this.menuRatings$.next(ratings);
       },
       (error) => {

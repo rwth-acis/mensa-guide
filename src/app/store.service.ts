@@ -53,24 +53,15 @@ export class StoreService {
   }
 
   public get menu() {
-    return this.menu$
-      .asObservable()
-      .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
-      .pipe(throttleTime(1000));
+    return this.menu$.asObservable();
   }
 
   public get menuRatings() {
-    return this.menuRatings$
-      .asObservable()
-      .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
-      .pipe(throttleTime(1000));
+    return this.menuRatings$.asObservable();
   }
 
   public get menuPictures() {
-    return this.menuPictures$
-      .asObservable()
-      .pipe(distinctUntilChanged((prev, curr) => isEqual(prev, curr)))
-      .pipe(throttleTime(1000));
+    return this.menuPictures$.asObservable();
   }
 
   public get dishData() {
@@ -230,69 +221,69 @@ export class StoreService {
     );
   }
 
-  // private saveStateToLocalStorage() {
-  //   const state: State = {
-  //     dishes: this.dishes$.getValue(),
-  //     menu: this.menu$.getValue(),
-  //     ratings: this.menuRatings$.getValue(),
-  //     pictures: this.menuPictures$.getValue(),
-  //     user: this.user$.getValue(),
-  //     selectedMensa: this.selectedMensa$.getValue(),
-  //     compactMode: this.compactMode$.getValue(),
-  //   };
-  //   localStorage.setItem("mensa-state", JSON.stringify(state));
-  // }
+  private saveStateToLocalStorage() {
+    const state: State = {
+      dishes: this.dishes$.getValue(),
+      menu: this.menu$.getValue(),
+      ratings: this.menuRatings$.getValue(),
+      pictures: this.menuPictures$.getValue(),
+      user: this.user$.getValue(),
+      selectedMensa: this.selectedMensa$.getValue(),
+      compactMode: this.compactMode$.getValue(),
+    };
+    localStorage.setItem("mensa-state", JSON.stringify(state));
+  }
 
-  // private loadStateFromLocalStorage() {
-  //   const stateString = localStorage.getItem("mensa-state");
-  //   if (stateString) {
-  //     const state: State = JSON.parse(stateString);
+  private loadStateFromLocalStorage() {
+    const stateString = localStorage.getItem("mensa-state");
+    if (stateString) {
+      const state: State = JSON.parse(stateString);
 
-  //     if (state.dishes) {
-  //       this.dishes$.next(state.dishes);
-  //     }
-  //     if (state.menu) {
-  //       this.menu$.next(state.menu);
-  //     }
-  //     if (state.ratings) {
-  //       this.menuRatings$.next(state.ratings);
-  //     }
-  //     if (state.pictures) {
-  //       this.menuPictures$.next(state.pictures);
-  //     }
-  //     if (state.user != null) {
-  //       this.user$.next(state.user);
-  //     }
-  //     if (state.selectedMensa != null) {
-  //       this.selectedMensa$.next(state.selectedMensa);
-  //     }
-  //     if (state.compactMode != null) {
-  //       this.compactMode$.next(state.compactMode);
-  //     }
-  //   }
-  // }
+      if (state.dishes) {
+        this.dishes$.next(state.dishes);
+      }
+      if (state.menu) {
+        this.menu$.next(state.menu);
+      }
+      if (state.ratings) {
+        this.menuRatings$.next(state.ratings);
+      }
+      if (state.pictures) {
+        this.menuPictures$.next(state.pictures);
+      }
+      if (state.user != null) {
+        this.user$.next(state.user);
+      }
+      if (state.selectedMensa != null) {
+        this.selectedMensa$.next(state.selectedMensa);
+      }
+      if (state.compactMode != null) {
+        this.compactMode$.next(state.compactMode);
+      }
+    }
+  }
 
   //subscribes to the app state and saves the change to the localstorage
-  // initLocalStorageSave() {
-  //   const saveFunc = () => this.saveStateToLocalStorage();
-  //   this.menu.subscribe(saveFunc);
-  //   this.menuRatings$.subscribe(saveFunc);
-  //   this.menuPictures$.subscribe(saveFunc);
+  initLocalStorageSave() {
+    const saveFunc = () => this.saveStateToLocalStorage();
+    this.menu.subscribe(saveFunc);
+    this.menuRatings$.subscribe(saveFunc);
+    this.menuPictures$.subscribe(saveFunc);
 
-  //   this.user.pipe(distinctUntilChanged()).subscribe((user) => {
-  //     if (user) {
-  //       this.api.setCredentials(
-  //         user.profile.preferred_username,
-  //         user.profile.sub,
-  //         user.access_token
-  //       );
-  //     } else {
-  //       this.api.resetCredentials();
-  //     }
-  //     saveFunc();
-  //   });
+    this.user.pipe(distinctUntilChanged()).subscribe((user) => {
+      if (user) {
+        this.api.setCredentials(
+          user.profile.preferred_username,
+          user.profile.sub,
+          user.access_token
+        );
+      } else {
+        this.api.resetCredentials();
+      }
+      saveFunc();
+    });
 
-  //   this.selectedMensa$.subscribe(saveFunc);
-  //   this.compactMode$.subscribe(saveFunc);
-  // }
+    this.selectedMensa$.subscribe(saveFunc);
+    this.compactMode$.subscribe(saveFunc);
+  }
 }

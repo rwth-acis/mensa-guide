@@ -19,7 +19,7 @@
   <ng-container *ngIf="isExpanded || dish.name === 'closed'">
     <mat-card-content>
       <app-average-stars
-        *ngIf="averageStars !== null"
+        *ngIf="averageStars"
         [averageStars]="averageStars"
         (click)="openReviewDialog()"
       >

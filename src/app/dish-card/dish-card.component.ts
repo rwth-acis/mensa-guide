@@ -85,9 +85,8 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
           if (ratings.length > 0) {
             this.averageStars =
               ratings
-                .map((rating) => rating.stars)
-                .reduce((sum, curr) => sum + curr) / this.numReviews;
-            console.log(this.averageStars);
+                .map((rating) => (rating.stars ? rating.stars : 0))
+                .reduce((sum, curr) => sum + curr, 0) / ratings.length;
           } else {
             this.averageStars = 0;
           }
@@ -104,6 +103,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       } else {
         this.initialized = false;
+        this.isExpanded = false;
       }
     });
     this.subs.push(sub);

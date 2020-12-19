@@ -228,7 +228,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
               const image = reader.result.toString();
               this.store
                 .addPicture(this.dish.id, { image, author: null })
-                .then(() => {
+                .subscribe(() => {
                   this.uploadButtonOpts.active = false;
                   this.snackBar.open(
                     "Done! Your photo is now available in the gallery.",

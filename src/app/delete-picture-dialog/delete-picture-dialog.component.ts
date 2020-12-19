@@ -24,10 +24,12 @@ export class DeletePictureDialogComponent implements OnInit {
   ngOnInit() {}
 
   onYesClick() {
-    this.store.deletePicture(this.data.dish, this.data.picture).then(() => {
-      this.snackBar.open("Your picture has been deleted.", null, {
-        duration: 3000,
+    this.store
+      .deletePicture(this.data.dish, this.data.picture)
+      .subscribe(() => {
+        this.snackBar.open("Your picture has been deleted.", null, {
+          duration: 3000,
+        });
       });
-    });
   }
 }

@@ -1,74 +1,69 @@
 <h1 mat-dialog-title>Reviews for "{{ data.dish.name }}"</h1>
-<div mat-dialog-content>
-  <div *ngIf="!editMode">
-    <p *ngIf="sortedReviews.length === 0">
-      "{{ data.dish.name }}" has no reviews yet. <br />
-      Did you ever have this dish? Then please tell us about it by writing the
-      first review!
-    </p>
-
-    <p *ngFor="let review of sortedReviews">
-      {{ review.author }}<br />
-      <app-average-stars [averageStars]="review.stars">
-        at {{ mensas[review.mensa] }}
-      </app-average-stars>
-      {{ formatDate(review.timestamp) }}
-      <span *ngIf="review.comment">
-        <br /><br />
-        {{ review.comment }}
-      </span>
-    </p>
+<ng-container *ngIf="sortedReviews$ | async as reviews">
+  <div mat-dialog-content>
+    <div *ngIf="!editMode">
+      <p *ngIf="reviews.length === 0">
+        "{{ data.dish.name }}" has no reviews yet. <br />
+        Did you ever have this dish? Then please tell us about it by writing the
+        first review!
+      </p>
+      <ng-container *ngFor="let review of reviews">
+        <p>
+          {{ review.author }}<br />
+          <app-average-stars [averageStars]="review.stars">
+            at {{ review.mensa }}
+          </app-average-stars>
+          {{ formatDate(review.timestamp) }}
+        </p>
+        <span *ngIf="review.comment">
+          {{ review.comment }}
+        </span>
+        <hr />
+      </ng-container>
+    </div>
+    <div *ngIf="user && editMode" id="review-form-container">
+      <app-review-form
+        #reviewForm
+        [dish]="data.dish"
+        [review]="
+          reviews.includes(user.profile.preferred_username)
+            ? reviews[user.profile.preferred_username]
+            : {
+                author: null,
+                comment: '',
+                timestamp: null,
+                mensa: null,
+                stars: 5
+              }
+        "
+      ></app-review-form>
+    </div>
   </div>
-  <div *ngIf="user && editMode" id="review-form-container">
-    <app-review-form
-      #reviewForm
-      [dish]="data.dish"
-      [review]="
-        reviews.includes(user.profile.preferred_username)
-          ? reviews[user.profile.preferred_username]
-          : {
-              author: null,
-              comment: '',
-              timestamp: null,
-              mensa: null,
-              stars: 5
-            }
-      "
-    ></app-review-form>
+  <div mat-dialog-actions>
+    <button *ngIf="user && !editMode" mat-button (click)="editMode = true">
+      Add Review
+    </button>
+    <button *ngIf="!user" mat-button disabled>Login to Add a Review</button>
+    <button *ngIf="user && editMode" mat-button (click)="editMode = false">
+      Cancel
+    </button>
+    <button
+      *ngIf="user && editMode && false"
+      mat-button
+      (click)="deleteReview(); editMode = false"
+      color="warn"
+    >
+      Delete Review
+    </button>
+    <button
+      *ngIf="user && editMode"
+      mat-button
+      (click)="reviewForm.save(); editMode = false"
+    >
+      Save Review
+    </button>
+    <button *ngIf="!editMode" mat-button mat-dialog-close cdkFocusInitial>
+      Ok
+    </button>
   </div>
-</div>
-<div mat-dialog-actions>
-  <button *ngIf="user && !editMode" mat-button (click)="editMode = true">
-    {{
-      reviews.hasOwnProperty(user.profile.preferred_username)
-        ? "Edit my Review"
-        : "Add Review"
-    }}
-  </button>
-  <button *ngIf="!user" mat-button disabled>Login to Add a Review</button>
-  <button *ngIf="user && editMode" mat-button (click)="editMode = false">
-    Cancel
-  </button>
-  <button
-    *ngIf="
-      user &&
-      editMode &&
-      reviews.hasOwnProperty(user.profile.preferred_username)
-    "
-    mat-button
-    (click)="deleteReview(); editMode = false"
-    color="warn"
-  >
-    Delete Review
-  </button>
-  <button
-    *ngIf="user && editMode"
-    mat-button
-    (click)="reviewForm.save(); editMode = false"
-  >
-    Save Review
-  </button>
-  <button *ngIf="!editMode" mat-button mat-dialog-close cdkFocusInitial>
-    Ok
-  </button>
-</div>
+</ng-container>

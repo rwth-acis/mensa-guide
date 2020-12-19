@@ -6,6 +6,8 @@ import { ReviewFormComponent } from "../review-form/review-form.component";
 import * as moment from "moment";
 import { Rating } from "../models/rating";
 import { Dish } from "../models/menu";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 export interface ReviewsDialogData {
   dish: Dish;
@@ -19,8 +21,8 @@ export interface ReviewsDialogData {
 export class ReviewsComponent implements OnInit {
   @ViewChild("reviewForm", { static: false })
   reviewForm: ReviewFormComponent;
-  reviews: Rating[];
-  sortedReviews: Rating[] = [];
+  reviews$: Observable<Rating[]>;
+  sortedReviews$: Observable<Rating[]>;
   min = Math.min;
   user: { profile: { preferred_username: string } };
   /**
@@ -35,12 +37,14 @@ export class ReviewsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: ReviewsDialogData
   ) {}
 
-  private static sortReviews(reviews: Rating[]): void {
-    reviews.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
+  private static sortReviews(reviews: Rating[]) {
+    return reviews.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
   }
 
   ngOnInit() {
-    this.store.menuRatings.subscribe();
+    this.sortedReviews$ = this.store.menuRatings.pipe(
+      map(ReviewsComponent.sortReviews)
+    );
     this.store.user.subscribe((user) => (this.user = user));
   }
 

@@ -63,7 +63,10 @@ export class StoreService {
         map((dishes) =>
           dishes
             ? dishes.filter(
-                (dish) => dish.name !== "geschlossen" && dish.name !== "closed"
+                (dish) =>
+                  dish.name !== "geschlossen" &&
+                  dish.name !== "closed" &&
+                  !dish.category.includes("Boisson")
               )
             : null
         )
@@ -77,7 +80,10 @@ export class StoreService {
         map((dishes) =>
           dishes
             ? dishes.filter(
-                (dish) => dish.name !== "geschlossen" && dish.name !== "closed"
+                (dish) =>
+                  dish.name !== "geschlossen" &&
+                  dish.name !== "closed" &&
+                  !dish.category.includes("Boisson")
               )
             : null
         )

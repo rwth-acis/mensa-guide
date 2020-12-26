@@ -5,6 +5,8 @@ import { ConnectionService } from "./connection.service";
 import {
   combineAll,
   distinctUntilChanged,
+  filter,
+  map,
   tap,
   throttleTime,
 } from "rxjs/operators";
@@ -38,7 +40,7 @@ export class StoreService {
   private selectedMensa$ = new BehaviorSubject<string>(null);
   private user$ = new BehaviorSubject(null);
   private dishes$ = new BehaviorSubject<Dish[]>([]);
-  private menu$ = new BehaviorSubject<menuItem[]>([]);
+  private menu$ = new BehaviorSubject<menuItem[]>(null);
   private menuRatings$ = new BehaviorSubject<Rating[]>(null);
   private menuPictures$ = new BehaviorSubject<Picture[]>(null);
   private online$ = new BehaviorSubject<boolean>(true);
@@ -58,7 +60,17 @@ export class StoreService {
   }
 
   public get menu() {
-    return this.menu$.asObservable();
+    return this.menu$
+      .asObservable()
+      .pipe(
+        map((dishes) =>
+          dishes
+            ? dishes.filter(
+                (dish) => dish.name !== "geschlossen" && dish.name !== "closed"
+              )
+            : null
+        )
+      );
   }
 
   public get menuRatings() {
@@ -99,6 +111,7 @@ export class StoreService {
 
   setSelectedMensa(mensa) {
     this.selectedMensa$.next(mensa);
+    this.menu$.next(null);
     this.api.fetchMenu(mensa).subscribe((menu) => {
       this.menu$.next(menu);
     });

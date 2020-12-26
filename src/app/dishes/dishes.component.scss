@@ -13,7 +13,10 @@
   }
 }
 
-
-app-dish-card, mat-card {
+app-dish-card,
+mat-card {
   margin-bottom: 10px;
+}
+mat-spinner {
+  margin: auto;
 }

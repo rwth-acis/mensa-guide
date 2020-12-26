@@ -3,6 +3,7 @@
     <input matInput placeholder="Filter by Dish" [(ngModel)]="filter" />
   </mat-form-field>
 </div>
+<mat-spinner *ngIf="!(dishes$ | async)"></mat-spinner>
 <ng-container *ngIf="dishes$ | async as dishes">
   <mat-card *ngIf="dishes.length === 0"
     >No dishes yet. Check back tomorrow!</mat-card

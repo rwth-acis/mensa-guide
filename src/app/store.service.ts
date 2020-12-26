@@ -39,7 +39,7 @@ export class StoreService {
   //Subjects
   private selectedMensa$ = new BehaviorSubject<string>(null);
   private user$ = new BehaviorSubject(null);
-  private dishes$ = new BehaviorSubject<Dish[]>([]);
+  private dishes$ = new BehaviorSubject<Dish[]>(null);
   private menu$ = new BehaviorSubject<menuItem[]>(null);
   private menuRatings$ = new BehaviorSubject<Rating[]>(null);
   private menuPictures$ = new BehaviorSubject<Picture[]>(null);

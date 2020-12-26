@@ -57,14 +57,7 @@
     <button *ngIf="user && editMode" mat-button (click)="editMode = false">
       Cancel
     </button>
-    <button
-      *ngIf="user && editMode && false"
-      mat-button
-      (click)="deleteReview(); editMode = false"
-      color="warn"
-    >
-      Delete Review
-    </button>
+
     <button
       *ngIf="user && editMode"
       mat-button

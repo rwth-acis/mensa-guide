@@ -14,6 +14,7 @@ export class menuItem {
 export class Dish {
   name: string;
   id: number;
+  category: string;
 }
 
 export interface MensaMenus {

@@ -16,14 +16,25 @@
           </app-average-stars>
           {{ formatDate(review.timestamp) }}
         </p>
-        <button
-          mat-icon-button
-          color="warn"
-          *ngIf="user && review.author === user.profile.preferred_username"
-          (click)="deleteReview(review.id); editMode = false"
-        >
-          <mat-icon>delete_outline</mat-icon>
-        </button>
+        <div class="tool-bar">
+          <!-- Should work if Mensa Service implements PUT /dishes/{id}/rating
+          <button
+            mat-icon-button
+            *ngIf="user && review.author === user.profile.preferred_username"
+            (click)="currReview = review; editMode = true"
+          >
+            <mat-icon>edit</mat-icon>
+          </button> -->
+          <button
+            mat-icon-button
+            color="warn"
+            *ngIf="user && review.author === user.profile.preferred_username"
+            (click)="deleteReview(review.id); editMode = false"
+          >
+            <mat-icon>delete_forever</mat-icon>
+          </button>
+        </div>
+
         <span *ngIf="review.comment">
           {{ review.comment }}
         </span>
@@ -34,17 +45,7 @@
       <app-review-form
         #reviewForm
         [dish]="data.dish"
-        [review]="
-          reviews.includes(user.profile.preferred_username)
-            ? reviews[user.profile.preferred_username]
-            : {
-                author: null,
-                comment: '',
-                timestamp: null,
-                mensa: null,
-                stars: 5
-              }
-        "
+        [review]="currReview"
       ></app-review-form>
     </div>
   </div>

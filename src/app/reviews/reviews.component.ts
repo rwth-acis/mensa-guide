@@ -22,6 +22,7 @@ export class ReviewsComponent implements OnInit {
   @ViewChild("reviewForm", { static: false })
   reviewForm: ReviewFormComponent;
   reviews$: Observable<Rating[]>;
+  currReview: Rating;
   sortedReviews$: Observable<Rating[]>;
   min = Math.min;
   user: { profile: { preferred_username: string } };

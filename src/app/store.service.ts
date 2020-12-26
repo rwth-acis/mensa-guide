@@ -192,6 +192,16 @@ export class StoreService {
     );
   }
 
+  updateReview(review: Rating) {
+    return this.api.modifyRating(review).pipe(
+      tap(() => {
+        let reviews = this.menuRatings$.getValue();
+
+        this.menuRatings$.next(this.updateObjectInArray(reviews, review));
+      })
+    );
+  }
+
   deleteReview(id: number) {
     return this.api.deleteRating(id).pipe(
       tap(() => {
@@ -317,5 +327,15 @@ export class StoreService {
 
     this.selectedMensa$.subscribe(saveFunc);
     this.compactMode$.subscribe(saveFunc);
+  }
+  private updateObjectInArray(arr: Rating[], obj: Rating) {
+    return arr.map((item) =>
+      item.id !== obj.id
+        ? item
+        : {
+            ...item,
+            ...obj,
+          }
+    );
   }
 }

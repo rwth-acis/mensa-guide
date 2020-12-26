@@ -27,6 +27,7 @@ export class ReviewFormComponent implements OnInit {
   ngOnInit() {}
 
   save() {
-    this.store.addReview(this.dish.id, this.review).subscribe();
+    if (this.review.id) this.store.updateReview(this.review).subscribe();
+    else this.store.addReview(this.dish.id, this.review).subscribe();
   }
 }

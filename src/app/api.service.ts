@@ -155,6 +155,17 @@ export class ApiService {
     });
   }
 
+  modifyRating(review: Rating) {
+    const url = ApiService.joinAbsoluteUrlPath(
+      environment.las2peerWebConnectorUrl,
+      this.MENSA_SERVICE_PATH,
+      this.MENSA_SERVICE_DISHES_PATH,
+      review.id.toString(),
+      this.MENSA_SERVICE_RATINGS_PATH
+    );
+    return this.makeRequest<boolean>(url, { method: "PUT" });
+  }
+
   deleteRating(reviewId: number): Observable<boolean> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,

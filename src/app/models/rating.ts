@@ -1,10 +1,12 @@
-export interface Rating {
-  author: string;
-  stars: number;
-  comment: string;
-  mensa: string;
-  timestamp: Date;
-  id: number;
+export class Rating {
+  constructor(
+    public author?: string,
+    public stars?: number,
+    public comment?: string,
+    public mensa?: string,
+    public timestamp?: Date,
+    public id?: number
+  ) {}
 }
 export interface ReviewForm {
   author: string;

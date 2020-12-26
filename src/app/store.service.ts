@@ -56,7 +56,17 @@ export class StoreService {
 
   //Getters for Observables
   public get dishes() {
-    return this.dishes$.asObservable();
+    return this.dishes$
+      .asObservable()
+      .pipe(
+        map((dishes) =>
+          dishes
+            ? dishes.filter(
+                (dish) => dish.name !== "geschlossen" && dish.name !== "closed"
+              )
+            : null
+        )
+      );
   }
 
   public get menu() {

@@ -14,6 +14,7 @@ import { isEqual } from "lodash";
 import { Dish, MensaMenus, menuItem } from "./models/menu";
 import { Rating, ReviewForm } from "./models/rating";
 import { Picture } from "./models/picture";
+import { Identifiers } from "@angular/compiler/src/render3/r3_identifiers";
 
 export interface State {
   dishes: Dish[];
@@ -191,14 +192,12 @@ export class StoreService {
     );
   }
 
-  deleteReview(dishId: number) {
-    return this.api.deleteRating(dishId).pipe(
-      tap((success) => {
-        if (success) {
-          let reviews = this.menuRatings$.getValue();
-          reviews.filter((review) => review.id != dishId);
-          this.menuRatings$.next(reviews);
-        }
+  deleteReview(id: number) {
+    return this.api.deleteRating(id).pipe(
+      tap(() => {
+        let reviews = this.menuRatings$.getValue();
+
+        this.menuRatings$.next(reviews.filter((review) => review.id != id));
       })
     );
   }

@@ -155,12 +155,12 @@ export class ApiService {
     });
   }
 
-  deleteRating(dishid: number): Observable<boolean> {
+  deleteRating(reviewId: number): Observable<boolean> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
       this.MENSA_SERVICE_DISHES_PATH,
-      dishid.toString(),
+      reviewId.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
     return this.makeRequest<boolean>(url, { method: "DELETE" });

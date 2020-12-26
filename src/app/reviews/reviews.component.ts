@@ -53,11 +53,12 @@ export class ReviewsComponent implements OnInit {
     return momentDate.calendar();
   }
 
-  deleteReview() {
-    this.store.deleteReview(this.data.dish.id).subscribe(() =>
+  deleteReview(id: number) {
+    console.log(id);
+    this.store.deleteReview(id).subscribe(() => {
       this.snackBar.open("Your review has been deleted.", null, {
         duration: 3000,
-      })
-    );
+      });
+    });
   }
 }

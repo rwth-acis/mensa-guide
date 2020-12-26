@@ -7,7 +7,8 @@
         Did you ever have this dish? Then please tell us about it by writing the
         first review!
       </p>
-      <ng-container *ngFor="let review of reviews">
+
+      <article *ngFor="let review of reviews">
         <p>
           {{ review.author }}<br />
           <app-average-stars [averageStars]="review.stars">
@@ -15,11 +16,19 @@
           </app-average-stars>
           {{ formatDate(review.timestamp) }}
         </p>
+        <button
+          mat-icon-button
+          color="warn"
+          *ngIf="user && review.author === user.profile.preferred_username"
+          (click)="deleteReview(review.id); editMode = false"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
         <span *ngIf="review.comment">
           {{ review.comment }}
         </span>
         <hr />
-      </ng-container>
+      </article>
     </div>
     <div *ngIf="user && editMode" id="review-form-container">
       <app-review-form

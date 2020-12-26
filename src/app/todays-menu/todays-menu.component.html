@@ -21,23 +21,34 @@
 </div>
 
 <div *ngIf="selectedMensa">
-  <mat-card *ngIf="isWeekend()">
+  <mat-spinner *ngIf="!menu"></mat-spinner>
+  <mat-card *ngIf="menu && menu.length == 0">
     <mat-card-content>
       <mat-icon color="primary">info_outlined</mat-icon>
       <span class="notice-text">
-        <i
-          >Please note that the mensas are closed on weekends. This is the menu
-          for Monday.</i
-        >
+        <i>The mensa seems to be closed</i>
       </span>
     </mat-card-content>
   </mat-card>
-  <div *ngFor="let dish of menu">
-    <app-dish-card
-      *ngIf="!isFiltered(dish.name) || !isFiltered(dish.category)"
-      [dish]="dish"
-      [category]="dish.category"
-      [compact]="compactMode"
-    ></app-dish-card>
-  </div>
+  <ng-container *ngIf="menu && menu.length > 0">
+    <mat-card *ngIf="isWeekend()">
+      <mat-card-content>
+        <mat-icon color="primary">info_outlined</mat-icon>
+        <span class="notice-text">
+          <i
+            >Please note that the mensas are closed on weekends. This is the
+            menu for Monday.</i
+          >
+        </span>
+      </mat-card-content>
+    </mat-card>
+    <div *ngFor="let dish of menu">
+      <app-dish-card
+        *ngIf="!isFiltered(dish.name) || !isFiltered(dish.category)"
+        [dish]="dish"
+        [category]="dish.category"
+        [compact]="compactMode"
+      ></app-dish-card>
+    </div>
+  </ng-container>
 </div>

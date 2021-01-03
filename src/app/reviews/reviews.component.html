@@ -42,11 +42,7 @@
       </article>
     </div>
     <div *ngIf="user && editMode" id="review-form-container">
-      <app-review-form
-        #reviewForm
-        [dish]="data.dish"
-        [review]="currReview"
-      ></app-review-form>
+      <app-review-form #reviewForm [dish]="data.dish"></app-review-form>
     </div>
   </div>
   <div mat-dialog-actions>

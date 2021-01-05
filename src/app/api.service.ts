@@ -64,9 +64,10 @@ export class ApiService {
         },
       });
     }
-    this.logger.debug(
-      "Fetching from " + url + " with options " + JSON.stringify(options)
-    );
+    if (environment.debug !== false)
+      this.logger.debug(
+        "Fetching from " + url + " with options " + JSON.stringify(options)
+      );
     const ngHttpOptions: {
       body?: any;
       headers?:

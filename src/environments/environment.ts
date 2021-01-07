@@ -6,7 +6,10 @@ export const environment = {
   production: false,
   openIdAuthorityUrl: "https://api.learning-layers.eu/o/oauth2",
   openIdClientId: "f8622260-875b-499a-82db-db55f89f9deb",
-  las2peerWebConnectorUrl: window["env"]["apiUrl"] || "http://127.0.0.1:8080",
+  las2peerWebConnectorUrl:
+    window.hasOwnProperty("env") && window["env"].hasOwnProperty("apiUrl") //check if apiurl is set by docker.
+      ? window["env"]["apiUrl"]
+      : "http://127.0.0.1:8080",
   debug: true,
 };
 

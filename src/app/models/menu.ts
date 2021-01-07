@@ -1,4 +1,4 @@
-export class menuItem {
+export class MenuItem {
   category: string;
   id: number;
   name: string;
@@ -18,7 +18,7 @@ export class Dish {
 }
 
 export interface MensaMenus {
-  vita: menuItem[];
-  academica: menuItem[];
-  ahornstrasse: menuItem[];
+  vita: MenuItem[];
+  academica: MenuItem[];
+  ahornstrasse: MenuItem[];
 }

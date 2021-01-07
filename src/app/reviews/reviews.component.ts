@@ -1,25 +1,25 @@
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 
-import { StoreService } from "../store.service";
-import { MAT_DIALOG_DATA, MatSnackBar } from "@angular/material";
-import { ReviewFormComponent } from "../review-form/review-form.component";
-import * as moment from "moment";
-import { Rating } from "../models/rating";
-import { Dish } from "../models/menu";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { StoreService } from '../store.service';
+import { MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { ReviewFormComponent } from '../review-form/review-form.component';
+import * as moment from 'moment';
+import { Rating } from '../models/rating';
+import { Dish } from '../models/menu';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface ReviewsDialogData {
   dish: Dish;
 }
 
 @Component({
-  selector: "app-reviews",
-  templateUrl: "./reviews.component.html",
-  styleUrls: ["./reviews.component.scss"],
+  selector: 'app-reviews',
+  templateUrl: './reviews.component.html',
+  styleUrls: ['./reviews.component.scss'],
 })
 export class ReviewsComponent implements OnInit {
-  @ViewChild("reviewForm", { static: false })
+  @ViewChild('reviewForm', { static: false })
   reviewForm: ReviewFormComponent;
   reviews$: Observable<Rating[]>;
   currReview: Rating;
@@ -57,7 +57,7 @@ export class ReviewsComponent implements OnInit {
   deleteReview(id: number) {
     console.log(id);
     this.store.deleteReview(id).subscribe(() => {
-      this.snackBar.open("Your review has been deleted.", null, {
+      this.snackBar.open('Your review has been deleted.', null, {
         duration: 3000,
       });
     });

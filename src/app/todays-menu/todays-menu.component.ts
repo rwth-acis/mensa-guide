@@ -1,26 +1,26 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { MensaMenus, menuItem } from "../models/menu";
-import { Picture } from "../models/picture";
-import { Rating } from "../models/rating";
-import { StoreService } from "../store.service";
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { MensaMenus, MenuItem } from '../models/menu';
+import { Picture } from '../models/picture';
+import { Rating } from '../models/rating';
+import { StoreService } from '../store.service';
 
 @Component({
-  selector: "app-todays-menu",
-  templateUrl: "./todays-menu.component.html",
-  styleUrls: ["./todays-menu.component.scss"],
+  selector: 'app-todays-menu',
+  templateUrl: './todays-menu.component.html',
+  styleUrls: ['./todays-menu.component.scss'],
 })
 export class TodaysMenuComponent implements OnInit, OnDestroy {
-  menu: menuItem[];
-  menu$: Observable<menuItem[]>; //menu which should be displayed
+  menu: MenuItem[];
+  menu$: Observable<MenuItem[]>; // menu which should be displayed
   reviews: Rating[];
   pictures: Picture[];
   selectedMensa: string;
   mensas: { name: string; id: number }[];
   compactMode = true;
-  filter = "";
+  filter = '';
 
   constructor(private store: StoreService) {}
 
@@ -57,15 +57,15 @@ export class TodaysMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    //this.store.stopPolling();
+    // this.store.stopPolling();
   }
 
   isFiltered(name: string) {
-    if (!this.filter || !name) return false;
+    if (!this.filter || !name) {
+      return false;
+    }
     let filterArr = this.filter.split(/(\s+)/);
-    filterArr = filterArr.filter(
-      (element) => element !== "" && element !== " "
-    );
+    filterArr = filterArr.filter((element) => element !== '' && element !== '');
     return !filterArr.some((element) => {
       const nameLowerCase = name.toLowerCase();
       const elementLowerCase = element.toLowerCase();

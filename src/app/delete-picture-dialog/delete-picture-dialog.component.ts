@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from '@angular/core';
 
-import { MAT_DIALOG_DATA, MatSnackBar } from "@angular/material";
-import { Picture } from "../models/picture";
-import { StoreService } from "../store.service";
+import { MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { Picture } from '../models/picture';
+import { StoreService } from '../store.service';
 
 export interface DeletePictureDialogData {
   dish: string;
@@ -10,9 +10,9 @@ export interface DeletePictureDialogData {
 }
 
 @Component({
-  selector: "app-delete-picture-dialog",
-  templateUrl: "./delete-picture-dialog.component.html",
-  styleUrls: ["./delete-picture-dialog.component.scss"],
+  selector: 'app-delete-picture-dialog',
+  templateUrl: './delete-picture-dialog.component.html',
+  styleUrls: ['./delete-picture-dialog.component.scss'],
 })
 export class DeletePictureDialogComponent implements OnInit {
   constructor(
@@ -27,7 +27,7 @@ export class DeletePictureDialogComponent implements OnInit {
     this.store
       .deletePicture(this.data.dish, this.data.picture)
       .subscribe(() => {
-        this.snackBar.open("Your picture has been deleted.", null, {
+        this.snackBar.open('Your picture has been deleted.', null, {
           duration: 3000,
         });
       });

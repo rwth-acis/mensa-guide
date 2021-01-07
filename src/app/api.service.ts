@@ -1,28 +1,28 @@
-import { Injectable } from "@angular/core";
-import { NGXLogger } from "ngx-logger";
-import { environment } from "../environments/environment";
-import { merge } from "lodash";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Dish, menuItem } from "./models/menu";
-import { Rating, ReviewForm } from "./models/rating";
-import { Picture } from "./models/picture";
-import { tap, timeout } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { NGXLogger } from 'ngx-logger';
+import { environment } from '../environments/environment';
+import { merge } from 'lodash';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Dish, MenuItem } from './models/menu';
+import { Rating, ReviewForm } from './models/rating';
+import { Picture } from './models/picture';
+import { tap, timeout } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ApiService {
   userCredentials;
-  MENSA_SERVICE_PATH = "mensa";
-  MENSA_SERVICE_DISHES_PATH = "dishes";
-  MENSA_SERVICE_RATINGS_PATH = "ratings";
-  MENSA_SERVICE_PICTURES_PATH = "pictures";
+  MENSA_SERVICE_PATH = 'mensa';
+  MENSA_SERVICE_DISHES_PATH = 'dishes';
+  MENSA_SERVICE_RATINGS_PATH = 'ratings';
+  MENSA_SERVICE_PICTURES_PATH = 'pictures';
 
   constructor(private http: HttpClient, private logger: NGXLogger) {}
 
   static joinAbsoluteUrlPath(...args) {
-    return args.map((pathPart) => pathPart.replace(/(^\/|\/$)/g, "")).join("/");
+    return args.map((pathPart) => pathPart.replace(/(^\/|\/$)/g, '')).join('/');
   }
 
   setCredentials(username, password, accessToken) {
@@ -45,10 +45,10 @@ export class ApiService {
   ) {
     options = merge(
       {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-          "accept-language": "en-US",
+          'Content-Type': 'application/json',
+          'accept-language': 'en-US',
         },
       },
       options
@@ -60,18 +60,18 @@ export class ApiService {
       const token = this.userCredentials.token;
       options = merge(options, {
         headers: {
-          Authorization: "Basic " + btoa(username + ":" + password),
+          Authorization: 'Basic ' + btoa(username + ':' + password),
           access_token: token,
         },
       });
     }
     if (environment.debug !== false) {
       console.log(
-        "Las2Peer Webconnector adress",
+        'Las2Peer Webconnector adress',
         environment.las2peerWebConnectorUrl
       );
       this.logger.debug(
-        "Fetching from " + url + " with options " + JSON.stringify(options)
+        'Fetching from ' + url + ' with options ' + JSON.stringify(options)
       );
     }
     const ngHttpOptions: {
@@ -81,13 +81,13 @@ export class ApiService {
         | {
             [header: string]: string | string[];
           };
-      observe?: "body";
+      observe?: 'body';
       params?:
         | HttpParams
         | {
             [param: string]: string | string[];
           };
-      responseType?: "json";
+      responseType?: 'json';
       reportProgress?: boolean;
       withCredentials?: boolean;
     } = {};
@@ -117,13 +117,13 @@ export class ApiService {
     return this.makeRequest<Dish[]>(url);
   }
 
-  fetchMenu(mensa: string): Observable<menuItem[]> {
+  fetchMenu(mensa: string): Observable<MenuItem[]> {
     const url = ApiService.joinAbsoluteUrlPath(
       environment.las2peerWebConnectorUrl,
       this.MENSA_SERVICE_PATH,
-      encodeURIComponent(mensa) + "?format=json"
+      encodeURIComponent(mensa) + '?format=json'
     );
-    return this.makeRequest<menuItem[]>(url);
+    return this.makeRequest<MenuItem[]>(url);
   }
 
   fetchRatings(dishId: number): Observable<Rating[]> {
@@ -157,7 +157,7 @@ export class ApiService {
       this.MENSA_SERVICE_RATINGS_PATH
     );
     return this.makeRequest<ReviewForm>(url, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(rating),
     });
   }
@@ -170,7 +170,7 @@ export class ApiService {
       review.id.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
-    return this.makeRequest<boolean>(url, { method: "PUT" });
+    return this.makeRequest<boolean>(url, { method: 'PUT' });
   }
 
   deleteRating(reviewId: number): Observable<boolean> {
@@ -181,7 +181,7 @@ export class ApiService {
       reviewId.toString(),
       this.MENSA_SERVICE_RATINGS_PATH
     );
-    return this.makeRequest<boolean>(url, { method: "DELETE" });
+    return this.makeRequest<boolean>(url, { method: 'DELETE' });
   }
 
   addPicture(dishid: number, picture: Picture): Observable<Picture> {
@@ -193,7 +193,7 @@ export class ApiService {
       this.MENSA_SERVICE_PICTURES_PATH
     );
     return this.makeRequest<Picture>(url, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(picture),
     });
   }
@@ -207,7 +207,7 @@ export class ApiService {
       this.MENSA_SERVICE_PICTURES_PATH
     );
     return this.makeRequest<boolean>(url, {
-      method: "DELETE",
+      method: 'DELETE',
       body: JSON.stringify(picture),
     });
   }

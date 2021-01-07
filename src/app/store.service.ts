@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, combineLatest } from "rxjs";
-import { ApiService } from "./api.service";
-import { ConnectionService } from "./connection.service";
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { ApiService } from './api.service';
+import { ConnectionService } from './connection.service';
 import {
   combineAll,
   distinctUntilChanged,
@@ -9,16 +9,16 @@ import {
   map,
   tap,
   throttleTime,
-} from "rxjs/operators";
-import { isEqual } from "lodash";
-import { Dish, MensaMenus, menuItem } from "./models/menu";
-import { Rating, ReviewForm } from "./models/rating";
-import { Picture } from "./models/picture";
-import { Identifiers } from "@angular/compiler/src/render3/r3_identifiers";
+} from 'rxjs/operators';
+import { isEqual } from 'lodash';
+import { Dish, MensaMenus, MenuItem } from './models/menu';
+import { Rating, ReviewForm } from './models/rating';
+import { Picture } from './models/picture';
+import { Identifiers } from '@angular/compiler/src/render3/r3_identifiers';
 
 export interface State {
   dishes: Dish[];
-  menu: menuItem[];
+  menu: MenuItem[];
   ratings: Rating[];
   pictures: Picture[];
   user: object;
@@ -27,21 +27,21 @@ export interface State {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class StoreService {
   public readonly mensas = [
-    { name: "Aachen, Mensa Academica", id: 187 },
-    { name: "Aachen, Mensa Ahorn", id: 95 },
-    { name: "Aachen, Mensa Vita", id: 96 },
+    { name: 'Aachen, Mensa Academica', id: 187 },
+    { name: 'Aachen, Mensa Ahorn', id: 95 },
+    { name: 'Aachen, Mensa Vita', id: 96 },
   ];
-  //private intervalHandle: NodeJS.Timer;
+  // private intervalHandle: NodeJS.Timer;
 
-  //Subjects
+  // Subjects
   private selectedMensa$ = new BehaviorSubject<string>(null);
   private user$ = new BehaviorSubject(null);
   private dishes$ = new BehaviorSubject<Dish[]>(null);
-  private menu$ = new BehaviorSubject<menuItem[]>(null);
+  private menu$ = new BehaviorSubject<MenuItem[]>(null);
   private menuRatings$ = new BehaviorSubject<Rating[]>(null);
   private menuPictures$ = new BehaviorSubject<Picture[]>(null);
   private online$ = new BehaviorSubject<boolean>(true);
@@ -55,7 +55,7 @@ export class StoreService {
     // this.initLocalStorageSave();
   }
 
-  //Getters for Observables
+  // Getters for Observables
   public get dishes() {
     return this.dishes$
       .asObservable()
@@ -64,9 +64,9 @@ export class StoreService {
           dishes
             ? dishes.filter(
                 (dish) =>
-                  dish.name !== "geschlossen" &&
-                  dish.name !== "closed" &&
-                  !dish.category.includes("Boisson")
+                  dish.name !== 'geschlossen' &&
+                  dish.name !== 'closed' &&
+                  !dish.category.includes('Boisson')
               )
             : null
         )
@@ -81,9 +81,9 @@ export class StoreService {
           dishes
             ? dishes.filter(
                 (dish) =>
-                  dish.name !== "geschlossen" &&
-                  dish.name !== "closed" &&
-                  !dish.category.includes("Boisson")
+                  dish.name !== 'geschlossen' &&
+                  dish.name !== 'closed' &&
+                  !dish.category.includes('Boisson')
               )
             : null
         )
@@ -99,11 +99,11 @@ export class StoreService {
   }
 
   public get dishData() {
-    return combineLatest(
+    return combineLatest([
       this.selectedDish,
       this.menuPictures,
-      this.menuRatings
-    );
+      this.menuRatings,
+    ]);
   }
   public get online() {
     return this.online$.asObservable();
@@ -120,7 +120,7 @@ export class StoreService {
   public get selectedDish() {
     return this.selectedDish$.asObservable();
   }
-  //Setters
+  // Setters
   setUser(user) {
     this.user$.next(user);
     // this.saveStateToLocalStorage();
@@ -161,7 +161,7 @@ export class StoreService {
   }
 
   addPicture(dishId: number, picture: Picture) {
-    console.log("got pic", picture.image);
+    console.log('got pic', picture.image);
     return this.api.addPicture(dishId, picture).pipe(
       tap((updatedPictures) => {
         const pictures = this.menuPictures$.getValue();
@@ -175,22 +175,22 @@ export class StoreService {
     return this.api.deletePicture(dish, picture).pipe(
       tap((updatedPictures) => {
         let pictures = this.menuPictures$.getValue();
-        pictures = pictures.filter((pic) => pic != picture);
+        pictures = pictures.filter((pic) => pic !== picture);
         this.menuPictures$.next(pictures);
       })
     );
   }
 
   addReview(dishId: number, review: ReviewForm) {
-    let user = this.user$.getValue();
+    const user = this.user$.getValue();
     review.author = user.profile.preferred_username;
     return this.api.addRating(dishId, review).pipe(
       tap((newRating) => {
-        let reviews = this.menuRatings$.getValue();
+        const reviews = this.menuRatings$.getValue();
         reviews.push({
           ...newRating,
           timestamp: new Date(),
-          mensa: this.mensas.find((mensa) => mensa.id == newRating.mensaId)
+          mensa: this.mensas.find((mensa) => mensa.id === newRating.mensaId)
             .name,
         });
         this.menuRatings$.next(reviews);
@@ -201,7 +201,7 @@ export class StoreService {
   updateReview(review: Rating) {
     return this.api.modifyRating(review).pipe(
       tap(() => {
-        let reviews = this.menuRatings$.getValue();
+        const reviews = this.menuRatings$.getValue();
 
         this.menuRatings$.next(this.updateObjectInArray(reviews, review));
       })
@@ -211,9 +211,9 @@ export class StoreService {
   deleteReview(id: number) {
     return this.api.deleteRating(id).pipe(
       tap(() => {
-        let reviews = this.menuRatings$.getValue();
+        const reviews = this.menuRatings$.getValue();
 
-        this.menuRatings$.next(reviews.filter((review) => review.id != id));
+        this.menuRatings$.next(reviews.filter((review) => review.id !== id));
       })
     );
   }
@@ -225,10 +225,10 @@ export class StoreService {
   //     this.api.fetchDishes().then((dishes) => {
   //       this.dishes$.next(dishes);
   //       if (!todaysMenuOnly) {
-  //         for (const menuItem of dishes) {
-  //           if (!processedDishes.has(menuItem)) {
-  //             this.fetchReviewsAndPicturesForDish(menuItem.id);
-  //             processedDishes.add(menuItem);
+  //         for (const MenuItem of dishes) {
+  //           if (!processedDishes.has(MenuItem)) {
+  //             this.fetchReviewsAndPicturesForDish(MenuItem.id);
+  //             processedDishes.add(MenuItem);
   //           }
   //         }
   //       }
@@ -238,10 +238,10 @@ export class StoreService {
   //         const mensaMenu = this.menu$.getValue();
   //         mensaMenu[mensa] = menu;
   //         this.menu$.next(mensaMenu);
-  //         menu.forEach((menuItem) => {
-  //           if (!processedDishes.has(menuItem)) {
-  //             this.fetchReviewsAndPicturesForDish(menuItem.id);
-  //             processedDishes.add(menuItem);
+  //         menu.forEach((MenuItem) => {
+  //           if (!processedDishes.has(MenuItem)) {
+  //             this.fetchReviewsAndPicturesForDish(MenuItem.id);
+  //             processedDishes.add(MenuItem);
   //           }
   //         });
   //       });
@@ -279,11 +279,11 @@ export class StoreService {
       selectedMensa: this.selectedMensa$.getValue(),
       compactMode: this.compactMode$.getValue(),
     };
-    localStorage.setItem("mensa-state", JSON.stringify(state));
+    localStorage.setItem('mensa-state', JSON.stringify(state));
   }
 
   private loadStateFromLocalStorage() {
-    const stateString = localStorage.getItem("mensa-state");
+    const stateString = localStorage.getItem('mensa-state');
     if (stateString) {
       const state: State = JSON.parse(stateString);
 
@@ -311,7 +311,7 @@ export class StoreService {
     }
   }
 
-  //subscribes to the app state and saves the change to the localstorage
+  // subscribes to the app state and saves the change to the localstorage
   initLocalStorageSave() {
     const saveFunc = () => this.saveStateToLocalStorage();
     this.menu.subscribe(saveFunc);

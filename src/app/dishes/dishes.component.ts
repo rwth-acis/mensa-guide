@@ -1,29 +1,29 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { Dish, MensaMenus, menuItem } from "../models/menu";
-import { Picture } from "../models/picture";
-import { Rating } from "../models/rating";
-import { StoreService } from "../store.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Dish, MensaMenus, MenuItem } from '../models/menu';
+import { Picture } from '../models/picture';
+import { Rating } from '../models/rating';
+import { StoreService } from '../store.service';
 
 @Component({
-  selector: "app-dishes",
-  templateUrl: "./dishes.component.html",
-  styleUrls: ["./dishes.component.scss"],
+  selector: 'app-dishes',
+  templateUrl: './dishes.component.html',
+  styleUrls: ['./dishes.component.scss'],
 })
 export class DishesComponent implements OnInit, OnDestroy {
   dishes$: Observable<Dish[]>;
-  menu: menuItem[];
+  menu: MenuItem[];
   reviews: Rating[];
   pictures: Picture[];
   compactMode = true;
-  filter = "";
+  filter = '';
 
   constructor(private store: StoreService) {}
 
   ngOnInit() {
     this.store.initDishes();
-    //this.store.startPolling(false);
+    // this.store.startPolling(false);
     this.dishes$ = this.store.dishes.pipe(
       map((dishes) =>
         dishes ? dishes.sort((a, b) => a.name.localeCompare(b.name)) : null
@@ -38,11 +38,11 @@ export class DishesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    //this.store.stopPolling();
+    // this.store.stopPolling();
   }
 
   onCompactToggled() {
-    //this.store.setCompactMode(!this.compactMode);
+    // this.store.setCompactMode(!this.compactMode);
   }
 
   isFiltered(name: string) {
@@ -52,7 +52,7 @@ export class DishesComponent implements OnInit, OnDestroy {
       }
       let filterArr = this.filter.split(/(\s+)/);
       filterArr = filterArr.filter(
-        (element) => element !== "" && element !== " "
+        (element) => element !== '' && element !== ' '
       );
       return !filterArr.some((element) => {
         const nameLowerCase = name.toLowerCase();

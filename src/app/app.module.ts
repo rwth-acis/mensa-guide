@@ -1,16 +1,16 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
+import { BrowserModule } from '@angular/platform-browser';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { environment } from "../environments/environment";
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
-import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
-import { OidcSilentComponent } from "./oidc-silent/oidc-silent.component";
-import { OidcSignoutComponent } from "./oidc-signout/oidc-signout.component";
-import { OidcSigninComponent } from "./oidc-signin/oidc-signin.component";
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { OidcSilentComponent } from './oidc-silent/oidc-silent.component';
+import { OidcSignoutComponent } from './oidc-signout/oidc-signout.component';
+import { OidcSigninComponent } from './oidc-signin/oidc-signin.component';
 import {
   MatButtonModule,
   MatCardModule,
@@ -26,21 +26,21 @@ import {
   MatSliderModule,
   MatSlideToggleModule,
   MatSnackBarModule,
-} from "@angular/material";
-import { MatProgressButtonsModule } from "mat-progress-buttons";
-import { TodaysMenuComponent } from "./todays-menu/todays-menu.component";
-import { DishesComponent } from "./dishes/dishes.component";
-import { NgxHmCarouselModule } from "ngx-hm-carousel";
-import { DishCarouselComponent } from "./dish-carousel/dish-carousel.component";
-import { FormsModule } from "@angular/forms";
-import { DishCardComponent } from "./dish-card/dish-card.component";
-import { ReviewsComponent } from "./reviews/reviews.component";
-import { ReviewFormComponent } from "./review-form/review-form.component";
-import { DeletePictureDialogComponent } from "./delete-picture-dialog/delete-picture-dialog.component";
-import { HttpClientModule } from "@angular/common/http";
-import { ImageDialogComponent } from "./image-dialog/image-dialog.component";
-import { PinchZoomModule } from "ngx-pinch-zoom";
-import { AverageStarsComponent } from "./average-stars/average-stars.component";
+} from '@angular/material';
+import { MatProgressButtonsModule } from 'mat-progress-buttons';
+import { TodaysMenuComponent } from './todays-menu/todays-menu.component';
+import { DishesComponent } from './dishes/dishes.component';
+import { NgxHmCarouselModule } from 'ngx-hm-carousel';
+import { DishCarouselComponent } from './dish-carousel/dish-carousel.component';
+import { FormsModule } from '@angular/forms';
+import { DishCardComponent } from './dish-card/dish-card.component';
+import { ReviewsComponent } from './reviews/reviews.component';
+import { ReviewFormComponent } from './review-form/review-form.component';
+import { DeletePictureDialogComponent } from './delete-picture-dialog/delete-picture-dialog.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ImageDialogComponent } from './image-dialog/image-dialog.component';
+import { PinchZoomModule } from 'ngx-pinch-zoom';
+import { AverageStarsComponent } from './average-stars/average-stars.component';
 
 export const config = {
   declarations: [
@@ -63,7 +63,7 @@ export const config = {
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    ServiceWorkerModule.register("ngsw-worker.js", {
+    ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
     }),
     LoggerModule.forRoot({ level: NgxLoggerLevel.DEBUG }),

@@ -8,23 +8,23 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
-} from "@angular/core";
-import { StoreService } from "../store.service";
-import * as Compress from "compress.js";
-import { MatProgressButtonOptions } from "mat-progress-buttons";
-import { MatDialog, MatSnackBar } from "@angular/material";
+} from '@angular/core';
+import { StoreService } from '../store.service';
+import * as Compress from 'compress.js';
+import { MatProgressButtonOptions } from 'mat-progress-buttons';
+import { MatDialog, MatSnackBar } from '@angular/material';
 
-import { ReviewsComponent } from "../reviews/reviews.component";
-import { meanBy } from "lodash";
-import { Dish } from "../models/menu";
-import { Rating } from "../models/rating";
-import { Picture } from "../models/picture";
-import { Subscription } from "rxjs";
+import { ReviewsComponent } from '../reviews/reviews.component';
+import { meanBy } from 'lodash';
+import { Dish } from '../models/menu';
+import { Rating } from '../models/rating';
+import { Picture } from '../models/picture';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: "app-dish-card",
-  templateUrl: "./dish-card.component.html",
-  styleUrls: ["./dish-card.component.scss"],
+  selector: 'app-dish-card',
+  templateUrl: './dish-card.component.html',
+  styleUrls: ['./dish-card.component.scss'],
 })
 export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() dish: Dish;
@@ -32,24 +32,24 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() compact = false;
   isExpanded = false;
   carouselData: Picture[] = [
-    { image: "assets/placeholders/dish-placeholder.png", author: "" },
+    { image: 'assets/placeholders/dish-placeholder.png', author: '' },
   ];
   averageStars: number;
-  @ViewChild("photoUpload", { static: false })
+  @ViewChild('photoUpload', { static: false })
   photoFileInput: ElementRef;
   uploadButtonOpts: MatProgressButtonOptions = {
     active: false,
-    text: "UPLOAD PHOTO",
+    text: 'UPLOAD PHOTO',
     spinnerSize: 19,
     raised: false,
     stroked: false,
     flat: false,
     fab: false,
-    buttonColor: "primary",
-    spinnerColor: "primary",
+    buttonColor: 'primary',
+    spinnerColor: 'primary',
     fullWidth: false,
     disabled: false,
-    mode: "indeterminate",
+    mode: 'indeterminate',
   };
   carouselPlaceholder = false;
   initialized = false;
@@ -69,17 +69,17 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
     let sub = this.store.user.subscribe((user) => {
       if (user) {
         this.uploadButtonOpts.disabled = false;
-        this.uploadButtonOpts.text = "UPLOAD PHOTO";
+        this.uploadButtonOpts.text = 'UPLOAD PHOTO';
       } else {
         this.uploadButtonOpts.disabled = true;
-        this.uploadButtonOpts.text = "LOGIN TO UPLOAD";
+        this.uploadButtonOpts.text = 'LOGIN TO UPLOAD';
       }
     });
     this.subs.push(sub);
 
     sub = this.store.dishData.subscribe(([currDish, pictures, ratings]) => {
-      if (currDish && this.dish.id == currDish.id) {
-        //init data for card content if dish is selected
+      if (currDish && this.dish.id === currDish.id) {
+        // init data for card content if dish is selected
         if (ratings && pictures) {
           this.numReviews = ratings.length;
           if (ratings.length > 0) {
@@ -92,7 +92,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
           }
 
           if (pictures.length > 0) {
-            this.carouselData = DishCardComponent.shuffle(pictures);
+            this.carouselData = this.shuffle(pictures);
             this.carouselPlaceholder = false;
           } else {
             this.carouselPlaceholder = true;
@@ -115,7 +115,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private static shuffle(arr: any[]) {
+  private shuffle(arr: any[]) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -125,14 +125,14 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   triggerPhotoUpload() {
     this.photoFileInput.nativeElement.click();
-    const e = new Event("touchstart");
+    const e = new Event('touchstart');
     this.photoFileInput.nativeElement.dispatchEvent(e);
   }
 
   ngAfterViewInit(): void {
     this.store.user.subscribe((user) => (this.user = user));
     if (this.photoFileInput) {
-      this.photoFileInput.nativeElement.addEventListener("change", (e) =>
+      this.photoFileInput.nativeElement.addEventListener('change', (e) =>
         this.uploadPhoto(e.target.files)
       );
     }
@@ -168,7 +168,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openReviewDialog(): void {
     this.dialog.open(ReviewsComponent, {
-      width: "80%",
+      width: '80%',
       data: { dish: this.dish },
     });
   }
@@ -209,21 +209,21 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.uploadButtonOpts.active = true;
     const files = Array.from(fileList);
     const compress = new Compress();
-    this.snackBar.open("Compressing...");
+    this.snackBar.open('Compressing...');
     compress
       .compress(files, {
         size: 1, // the max size in MB, defaults to 2MB
         resize: true, // defaults to true, set false if you do not want to resize the image width and height
       })
       .then((compressedFiles) => {
-        this.snackBar.open("Uploading...");
+        this.snackBar.open('Uploading...');
         for (const compressionData of compressedFiles) {
           const base64str = compressionData.data;
           const imgExt = compressionData.ext;
           const file = Compress.convertBase64ToFile(base64str, imgExt);
           const reader = new FileReader();
           reader.addEventListener(
-            "load",
+            'load',
             () => {
               const image = reader.result.toString();
               this.store
@@ -231,7 +231,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
                 .subscribe(() => {
                   this.uploadButtonOpts.active = false;
                   this.snackBar.open(
-                    "Done! Your photo is now available in the gallery.",
+                    'Done! Your photo is now available in the gallery.',
                     null,
                     {
                       duration: 3000,

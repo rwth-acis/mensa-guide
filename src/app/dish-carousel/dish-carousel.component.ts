@@ -1,15 +1,15 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from '@angular/core';
 
-import { StoreService } from "../store.service";
-import { MatDialog } from "@angular/material";
-import { DeletePictureDialogComponent } from "../delete-picture-dialog/delete-picture-dialog.component";
-import { ImageDialogComponent } from "../image-dialog/image-dialog.component";
-import { Picture } from "../models/picture";
+import { StoreService } from '../store.service';
+import { MatDialog } from '@angular/material';
+import { DeletePictureDialogComponent } from '../delete-picture-dialog/delete-picture-dialog.component';
+import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
+import { Picture } from '../models/picture';
 
 @Component({
-  selector: "app-dish-carousel",
-  templateUrl: "./dish-carousel.component.html",
-  styleUrls: ["./dish-carousel.component.scss"],
+  selector: 'app-dish-carousel',
+  templateUrl: './dish-carousel.component.html',
+  styleUrls: ['./dish-carousel.component.scss'],
 })
 export class DishCarouselComponent implements OnInit {
   currentIndex = 0;
@@ -42,8 +42,8 @@ export class DishCarouselComponent implements OnInit {
 
   openShowPictureDialog(picture: Picture) {
     this.dialog.open(ImageDialogComponent, {
-      maxWidth: "90vw",
-      width: "90vw",
+      maxWidth: '90vw',
+      width: '90vw',
       data: { image: picture.image },
     });
   }

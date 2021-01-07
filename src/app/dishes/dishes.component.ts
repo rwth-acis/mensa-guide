@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { Dish, MensaMenus, menuItem } from "../models/menu";
 import { Picture } from "../models/picture";
 import { Rating } from "../models/rating";
@@ -23,7 +24,11 @@ export class DishesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.store.initDishes();
     //this.store.startPolling(false);
-    this.dishes$ = this.store.dishes;
+    this.dishes$ = this.store.dishes.pipe(
+      map((dishes) =>
+        dishes ? dishes.sort((a, b) => a.name.localeCompare(b.name)) : null
+      )
+    );
     this.store.menu.subscribe((menu) => (this.menu = menu));
     this.store.menuRatings.subscribe((reviews) => (this.reviews = reviews));
     this.store.menuPictures.subscribe((pictures) => (this.pictures = pictures));

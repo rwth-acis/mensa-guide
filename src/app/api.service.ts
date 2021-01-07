@@ -53,6 +53,7 @@ export class ApiService {
       },
       options
     );
+
     if (this.userCredentials) {
       const username = this.userCredentials.user;
       const password = this.userCredentials.password;
@@ -64,10 +65,15 @@ export class ApiService {
         },
       });
     }
-    if (environment.debug !== false)
+    if (environment.debug !== false) {
+      console.log(
+        "Las2Peer Webconnector adress",
+        environment.las2peerWebConnectorUrl
+      );
       this.logger.debug(
         "Fetching from " + url + " with options " + JSON.stringify(options)
       );
+    }
     const ngHttpOptions: {
       body?: any;
       headers?:

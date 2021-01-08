@@ -1,8 +1,8 @@
-<mat-card class="dish-card">
+<mat-card *ngIf="dish" class="dish-card">
   <div id="mat-card-top" [ngClass]="{ compact: compact }">
     <div id="mat-card-heading" (click)="toggleExpanded()">
       <mat-card-title>{{
-        dish.name == "closed" ? "Not Available" : dish.name
+        dish.name == 'closed' ? 'Not Available' : dish.name
       }}</mat-card-title>
       <mat-card-subtitle *ngIf="category">{{ category }}</mat-card-subtitle>
     </div>

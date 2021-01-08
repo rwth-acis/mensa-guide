@@ -39,6 +39,9 @@ export class ReviewsComponent implements OnInit {
   ) {}
 
   private static sortReviews(reviews: Rating[]) {
+    if (!reviews) {
+      return null;
+    }
     return reviews.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1));
   }
 

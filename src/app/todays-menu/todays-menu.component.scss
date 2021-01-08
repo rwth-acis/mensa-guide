@@ -7,7 +7,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
 
-  .dishes-filter  {
+  .dishes-filter {
     flex-grow: 1;
   }
 
@@ -17,8 +17,12 @@
   }
 }
 
+mat-spinner {
+  margin: auto;
+}
 
-app-dish-card, mat-card {
+app-dish-card,
+mat-card {
   margin-bottom: 10px;
 
   .notice-text {

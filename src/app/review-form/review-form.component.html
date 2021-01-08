@@ -1,19 +1,24 @@
 <mat-form-field>
   <mat-label>Stars</mat-label>
   <mat-select [(ngModel)]="review.stars">
-    <mat-option *ngFor="let star of [1,2,3,4,5]" [value]="star">
-      {{star}} {{star == 1 ? 'Star' : 'Stars' }}
+    <mat-option *ngFor="let star of [1, 2, 3, 4, 5]" [value]="star">
+      {{ star }} {{ star == 1 ? "Star" : "Stars" }}
     </mat-option>
   </mat-select>
 </mat-form-field>
 <mat-form-field>
   <mat-label>Mensa</mat-label>
-  <mat-select [(ngModel)]="review.mensa">
+  <mat-select [(ngModel)]="review.mensaId">
     <mat-option *ngFor="let mensa of mensas" [value]="mensa.id">
-      {{mensa.name}}
+      {{ mensa.name }}
     </mat-option>
   </mat-select>
 </mat-form-field>
 <mat-form-field>
-  <textarea maxlength="280" [(ngModel)]="review.comment" matInput placeholder="Comment (optional)"></textarea>
+  <textarea
+    maxlength="280"
+    [(ngModel)]="review.comment"
+    matInput
+    placeholder="Comment (optional)"
+  ></textarea>
 </mat-form-field>

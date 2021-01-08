@@ -1,9 +1,13 @@
-#average-stars {
-  display: block;
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  #average-stars {
+    display: block;
+    position: relative;
 
-  #average-stars-text {
-    position: absolute;
-    margin-top: 5px;
-    margin-left: 5px;
+    #average-stars-text {
+      position: absolute;
+      margin-top: 5px;
+      margin-left: 5px;
+    }
   }
 }

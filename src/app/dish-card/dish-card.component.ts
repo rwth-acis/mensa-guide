@@ -1,28 +1,41 @@
-import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
-import {StoreService} from '../store.service';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
+import { StoreService } from '../store.service';
 import * as Compress from 'compress.js';
-import {MatProgressButtonOptions} from 'mat-progress-buttons';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {Picture, PictureCollection, RatingCollection} from '../api.service';
-import {ReviewsComponent} from '../reviews/reviews.component';
-import {meanBy} from 'lodash';
+import { MatProgressButtonOptions } from 'mat-progress-buttons';
+import { MatDialog, MatSnackBar } from '@angular/material';
 
+import { ReviewsComponent } from '../reviews/reviews.component';
+import { meanBy } from 'lodash';
+import { Dish } from '../models/menu';
+import { Rating } from '../models/rating';
+import { Picture } from '../models/picture';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dish-card',
   templateUrl: './dish-card.component.html',
-  styleUrls: ['./dish-card.component.scss']
+  styleUrls: ['./dish-card.component.scss'],
 })
-export class DishCardComponent implements OnChanges, AfterViewInit {
-  @Input() name: string;
+export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input() dish: Dish;
   @Input() category: string;
-  @Input() reviewCollection: RatingCollection = {};
-  @Input() pictureCollection: PictureCollection = {};
   @Input() compact = false;
-  expanded = false;
-  carouselData: Picture[] = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
-  averageStars: number = null;
-  @ViewChild('photoUpload', {static: false})
+  isExpanded = false;
+  carouselData: Picture[] = [
+    { image: 'assets/placeholders/dish-placeholder.png', author: '' },
+  ];
+  averageStars: number;
+  @ViewChild('photoUpload', { static: false })
   photoFileInput: ElementRef;
   uploadButtonOpts: MatProgressButtonOptions = {
     active: false,
@@ -41,10 +54,19 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   carouselPlaceholder = false;
   initialized = false;
   user;
-  private numReviews: number;
+  numReviews: number;
+  currDishId: number;
 
-  constructor(private store: StoreService, private snackBar: MatSnackBar, public dialog: MatDialog) {
-    this.store.user.subscribe(user => {
+  private subs: Subscription[] = [];
+
+  constructor(
+    private store: StoreService,
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
+  ) {}
+
+  ngOnInit() {
+    let sub = this.store.user.subscribe((user) => {
       if (user) {
         this.uploadButtonOpts.disabled = false;
         this.uploadButtonOpts.text = 'UPLOAD PHOTO';
@@ -53,23 +75,47 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
         this.uploadButtonOpts.text = 'LOGIN TO UPLOAD';
       }
     });
-  }
+    this.subs.push(sub);
 
-  private static async extractImagesFromPictureCollection(pictures: PictureCollection): Promise<Picture[]> {
-    if (pictures == null) {
-      pictures = {};
-    }
-    const imageData = [];
-    for (const pictureArray of Object.values(pictures)) {
-      for (const picture of pictureArray) {
-        imageData.push(picture);
+    sub = this.store.dishData.subscribe(([currDish, pictures, ratings]) => {
+      if (currDish && this.dish.id === currDish.id) {
+        // init data for card content if dish is selected
+        if (ratings && pictures) {
+          this.numReviews = ratings.length;
+          if (ratings.length > 0) {
+            this.averageStars =
+              ratings
+                .map((rating) => (rating.stars ? rating.stars : 0))
+                .reduce((sum, curr) => sum + curr, 0) / ratings.length;
+          } else {
+            this.averageStars = 0;
+          }
+
+          if (pictures.length > 0) {
+            this.carouselData = this.shuffle(pictures);
+            this.carouselPlaceholder = false;
+          } else {
+            this.carouselPlaceholder = true;
+          }
+          this.initialized = true;
+        } else {
+          this.initialized = false;
+        }
+      } else {
+        this.initialized = false;
+        this.isExpanded = false;
       }
-    }
-    DishCardComponent.shuffle(imageData);
-    return imageData;
+    });
+    this.subs.push(sub);
   }
 
-  private static shuffle(arr) {
+  ngOnDestroy() {
+    this.subs.forEach((sub) => {
+      sub.unsubscribe();
+    });
+  }
+
+  private shuffle(arr: any[]) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -84,104 +130,119 @@ export class DishCardComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.store.user.subscribe(user => this.user = user);
+    this.store.user.subscribe((user) => (this.user = user));
     if (this.photoFileInput) {
-      this.photoFileInput.nativeElement.addEventListener('change', (e) => this.uploadPhoto(e.target.files));
-    }
-
-    setTimeout(_ => DishCardComponent.extractImagesFromPictureCollection(this.pictureCollection)
-      .then(imageData => {
-        if (imageData.length === 0) {
-          imageData = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
-          this.carouselPlaceholder = true;
-        } else {
-          this.carouselPlaceholder = false;
-        }
-        this.carouselData = imageData;
-        this.initialized = true;
-      }));
-    setTimeout(_ => this.calculateAverageStars());
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.initialized) {
-      if (changes.pictureCollection) {
-        const pictures: PictureCollection = changes.pictureCollection.currentValue;
-        DishCardComponent.extractImagesFromPictureCollection(pictures).then(imageData => {
-          if (imageData.length === 0) {
-            imageData = [{image: 'assets/placeholders/dish-placeholder.png', author: ''}];
-            this.carouselPlaceholder = true;
-          } else {
-            this.carouselPlaceholder = false;
-          }
-          this.carouselData = imageData;
-        });
-      }
-      if (changes.reviewCollection) {
-        this.calculateAverageStars();
-      }
+      this.photoFileInput.nativeElement.addEventListener('change', (e) =>
+        this.uploadPhoto(e.target.files)
+      );
     }
   }
+
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (this.initialized) {
+  //     if (changes.pictureCollection) {
+  //       const pictures: Picture[] = changes.pictureCollection.currentValue;
+  //       DishCardComponent.extractImagesFromPictureCollection(pictures).then(
+  //         (imageData) => {
+  //           if (imageData) {
+  //             this.initialized = true;
+  //           }
+
+  //           if (imageData.length === 0) {
+  //             imageData = [
+  //               {
+  //                 image: "assets/placeholders/dish-placeholder.png",
+  //                 author: "",
+  //               },
+  //             ];
+  //             this.carouselPlaceholder = true;
+  //           } else {
+  //             this.carouselPlaceholder = false;
+  //           }
+  //           this.carouselData = imageData;
+  //         }
+  //       );
+  //     }
+  //   }
+  // }
 
   openReviewDialog(): void {
     this.dialog.open(ReviewsComponent, {
       width: '80%',
-      data: {dish: this.name}
+      data: { dish: this.dish },
     });
   }
 
-  isExpanded() {
-    return !this.compact || this.expanded;
-  }
+  // isExpanded() {
+  //   return !this.compact || this.expanded;
+  // }
 
   toggleExpanded() {
-    if (this.compact) {
-      this.expanded = !this.expanded;
+    this.isExpanded = !this.isExpanded;
+    if (this.isExpanded) {
+      this.store.setSelectedDish(this.dish);
     }
   }
 
   onCarouselClicked() {
-    if (this.user && this.carouselPlaceholder && this.photoFileInput.nativeElement) {
+    if (
+      this.user &&
+      this.carouselPlaceholder &&
+      this.photoFileInput.nativeElement
+    ) {
       this.photoFileInput.nativeElement.click();
     }
   }
 
-  private calculateAverageStars() {
-    const reviews = Object.values(this.reviewCollection);
-    if (reviews.length === 0) {
-      this.averageStars = null;
-      return;
-    }
-    this.averageStars = Math.round(meanBy(reviews, (review) => review.stars));
-    this.numReviews = reviews.length;
-  }
+  // private calculateAverageStars() {
+  //   if (!this.reviewCollection) return;
+  //   const reviews = Object.values(this.reviewCollection);
+  //   if (!reviews || reviews.length === 0) {
+  //     this.averageStars = null;
+  //     return;
+  //   }
+  //   this.averageStars = Math.round(meanBy(reviews, (review) => review.stars));
+  //   this.numReviews = reviews.length;
+  // }
 
   private uploadPhoto(fileList: FileList) {
     this.uploadButtonOpts.active = true;
     const files = Array.from(fileList);
     const compress = new Compress();
     this.snackBar.open('Compressing...');
-    compress.compress(files, {
-      size: 1, // the max size in MB, defaults to 2MB
-      resize: true, // defaults to true, set false if you do not want to resize the image width and height
-    }).then((compressedFiles) => {
-      this.snackBar.open('Uploading...');
-      for (const compressionData of compressedFiles) {
-        const base64str = compressionData.data;
-        const imgExt = compressionData.ext;
-        const file = Compress.convertBase64ToFile(base64str, imgExt);
-        const reader = new FileReader();
-        reader.addEventListener('load', () => {
-          const image = reader.result.toString();
-          this.store.addPicture(this.name, {image, author: null}).then(() => {
-            this.uploadButtonOpts.active = false;
-            this.snackBar.open('Done! Your photo is now available in the gallery.', null, {
-              duration: 3000,
-            });
-          });
-        }, false);
-        reader.readAsDataURL(file);
-      }
-    });
+    compress
+      .compress(files, {
+        size: 1, // the max size in MB, defaults to 2MB
+        resize: true, // defaults to true, set false if you do not want to resize the image width and height
+      })
+      .then((compressedFiles) => {
+        this.snackBar.open('Uploading...');
+        for (const compressionData of compressedFiles) {
+          const base64str = compressionData.data;
+          const imgExt = compressionData.ext;
+          const file = Compress.convertBase64ToFile(base64str, imgExt);
+          const reader = new FileReader();
+          reader.addEventListener(
+            'load',
+            () => {
+              const image = reader.result.toString();
+              this.store
+                .addPicture(this.dish.id, { image, author: null })
+                .subscribe(() => {
+                  this.uploadButtonOpts.active = false;
+                  this.snackBar.open(
+                    'Done! Your photo is now available in the gallery.',
+                    null,
+                    {
+                      duration: 3000,
+                    }
+                  );
+                });
+            },
+            false
+          );
+          reader.readAsDataURL(file);
+        }
+      });
   }
 }

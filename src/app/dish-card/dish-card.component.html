@@ -1,36 +1,53 @@
-<mat-card class="dish-card">
-  <div id="mat-card-top" [ngClass]="{compact: compact}">
+<mat-card *ngIf="dish" class="dish-card">
+  <div id="mat-card-top" [ngClass]="{ compact: compact }">
     <div id="mat-card-heading" (click)="toggleExpanded()">
-      <mat-card-title>{{name == 'closed' ? 'Not Available' : name}}</mat-card-title>
-      <mat-card-subtitle *ngIf="category">{{category}}</mat-card-subtitle>
+      <mat-card-title>{{
+        dish.name == 'closed' ? 'Not Available' : dish.name
+      }}</mat-card-title>
+      <mat-card-subtitle *ngIf="category">{{ category }}</mat-card-subtitle>
     </div>
-    <button *ngIf="compact" mat-icon-button aria-label="Expand" (click)="toggleExpanded()">
-      <mat-icon *ngIf="!expanded">keyboard_arrow_left</mat-icon>
-      <mat-icon *ngIf="expanded">keyboard_arrow_down</mat-icon>
+    <button
+      *ngIf="compact"
+      mat-icon-button
+      aria-label="Expand"
+      (click)="toggleExpanded()"
+    >
+      <mat-icon *ngIf="isExpanded">keyboard_arrow_up</mat-icon>
+      <mat-icon *ngIf="!isExpanded">keyboard_arrow_down</mat-icon>
     </button>
   </div>
-
-  <mat-card-content [hidden]="!isExpanded() || name === 'closed'">
-    <app-average-stars *ngIf="averageStars !== null"
-                       [averageStars]="averageStars"
-                       (click)="openReviewDialog()">
-      (from {{numReviews}} reviews)
-    </app-average-stars>
-    <div *ngIf="!initialized" id="carousel-placeholder">
-      <mat-spinner diameter="120"></mat-spinner>
-    </div>
-    <app-dish-carousel *ngIf="initialized"
-                       [pictures]="carouselData"
-                       [fitPicture]="carouselPlaceholder"
-                       [placeholder]="carouselPlaceholder"
-                       [dish]="name"
-                       (click)="onCarouselClicked()">
-    </app-dish-carousel>
-  </mat-card-content>
-  <mat-card-actions [hidden]="!isExpanded() || name === 'closed'">
-    <mat-spinner-button (btnClick)="triggerPhotoUpload()" [options]="uploadButtonOpts">UPLOAD PHOTO
-      <input #photoUpload id="photo-upload" type="file" accept="image/*">
-    </mat-spinner-button>
-    <button mat-button color="primary" (click)="openReviewDialog()">REVIEWS</button>
-  </mat-card-actions>
+  <ng-container *ngIf="isExpanded || dish.name === 'closed'">
+    <mat-card-content>
+      <app-average-stars
+        *ngIf="averageStars"
+        [averageStars]="averageStars"
+        (click)="openReviewDialog()"
+      >
+        (from {{ numReviews }} reviews)
+      </app-average-stars>
+      <div *ngIf="!initialized" id="carousel-placeholder">
+        <mat-spinner diameter="120"></mat-spinner>
+      </div>
+      <app-dish-carousel
+        *ngIf="initialized"
+        [pictures]="carouselData"
+        [fitPicture]="carouselPlaceholder"
+        [placeholder]="carouselPlaceholder"
+        [dish]="dish.name"
+        (click)="onCarouselClicked()"
+      >
+      </app-dish-carousel>
+    </mat-card-content>
+    <mat-card-actions>
+      <mat-spinner-button
+        (btnClick)="triggerPhotoUpload()"
+        [options]="uploadButtonOpts"
+        >UPLOAD PHOTO
+        <input #photoUpload id="photo-upload" type="file" accept="image/*" />
+      </mat-spinner-button>
+      <button mat-button color="primary" (click)="openReviewDialog()">
+        REVIEWS
+      </button>
+    </mat-card-actions>
+  </ng-container>
 </mat-card>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { environment } from '../environments/environment';
 import { merge } from 'lodash';
@@ -65,15 +65,15 @@ export class ApiService {
         },
       });
     }
-    if (environment.debug !== false) {
-      console.log(
-        'Las2Peer Webconnector adress',
-        environment.las2peerWebConnectorUrl
-      );
-      this.logger.debug(
-        'Fetching from ' + url + ' with options ' + JSON.stringify(options)
-      );
-    }
+    // if (isDevMode()) {
+    console.log(
+      'Las2Peer Webconnector adress',
+      environment.las2peerWebConnectorUrl
+    );
+    this.logger.debug(
+      'Fetching from ' + url + ' with options ' + JSON.stringify(options)
+    );
+    // }
     const ngHttpOptions: {
       body?: any;
       headers?:

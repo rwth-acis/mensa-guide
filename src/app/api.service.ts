@@ -65,15 +65,15 @@ export class ApiService {
         },
       });
     }
-    // if (isDevMode()) {
-    console.log(
-      'Las2Peer Webconnector adress',
-      environment.las2peerWebConnectorUrl
-    );
-    this.logger.debug(
-      'Fetching from ' + url + ' with options ' + JSON.stringify(options)
-    );
-    // }
+    if (isDevMode()) {
+      console.log(
+        'Las2Peer Webconnector adress',
+        environment.las2peerWebConnectorUrl
+      );
+      this.logger.debug(
+        'Fetching from ' + url + ' with options ' + JSON.stringify(options)
+      );
+    }
     const ngHttpOptions: {
       body?: any;
       headers?:

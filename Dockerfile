@@ -3,7 +3,7 @@
 FROM node:alpine AS my-app-build
 
 
-ENV API_URL=https://las2peer.tech4comp.dbis.rwth-aachen.de
+ENV API_URL=las2peer-bootstrap.sbf-dev:32011
 ENV DEBUG=true
 
 WORKDIR /app

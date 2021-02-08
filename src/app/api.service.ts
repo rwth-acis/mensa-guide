@@ -74,6 +74,10 @@ export class ApiService {
         'Fetching from ' + url + ' with options ' + JSON.stringify(options)
       );
     }
+    console.log(
+      'Las2Peer Webconnector adress',
+      environment.las2peerWebConnectorUrl
+    );
     const ngHttpOptions: {
       body?: any;
       headers?:

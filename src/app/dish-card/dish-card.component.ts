@@ -18,6 +18,8 @@ import { Dish } from '../models/menu';
 import { Rating } from '../models/rating';
 import { Picture } from '../models/picture';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dish-card',
@@ -65,13 +67,13 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     let sub = this.store.user.subscribe((user) => {
-      if (user) {
-        this.uploadButtonOpts.disabled = false;
-        this.uploadButtonOpts.text = 'UPLOAD PHOTO';
-      } else {
-        this.uploadButtonOpts.disabled = true;
-        this.uploadButtonOpts.text = 'LOGIN TO UPLOAD';
-      }
+      // if (user) {
+      //   this.uploadButtonOpts.disabled = false;
+      //   this.uploadButtonOpts.text = 'UPLOAD PHOTO';
+      // } else {
+      //   this.uploadButtonOpts.disabled = true;
+      //   this.uploadButtonOpts.text = 'LOGIN TO UPLOAD';
+      // }
     });
     this.subs.push(sub);
 
@@ -204,7 +206,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   private uploadPhoto(fileList: FileList) {
-    this.uploadButtonOpts.active = true;
+    // this.uploadButtonOpts.active = true;
     const files = Array.from(fileList);
     const compress = new Compress();
     this.snackBar.open('Compressing...');
@@ -227,7 +229,7 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
               this.store
                 .addPicture(this.dish.id, { image, author: null })
                 .subscribe(() => {
-                  this.uploadButtonOpts.active = false;
+                  // this.uploadButtonOpts.active = false;
                   this.snackBar.open(
                     'Done! Your photo is now available in the gallery.',
                     null,

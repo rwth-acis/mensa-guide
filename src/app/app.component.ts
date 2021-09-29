@@ -11,9 +11,10 @@ import 'oidc-client';
 import 'las2peer-frontend-statusbar/las2peer-frontend-statusbar.js';
 import { CordovaPopupNavigator, UserManager } from 'oidc-client';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { MatSidenav, MatSnackBar } from '@angular/material';
 import { SwUpdate } from '@angular/service-worker';
 import { Router } from '@angular/router';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // workaround for openidconned-signin
 // remove when the lib imports with "import {UserManager} from 'oidc-client';" instead of "import 'oidc-client';"

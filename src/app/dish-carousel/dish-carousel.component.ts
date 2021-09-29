@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { StoreService } from '../store.service';
-import { MatDialog } from '@angular/material';
+
 import { DeletePictureDialogComponent } from '../delete-picture-dialog/delete-picture-dialog.component';
 import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
 import { Picture } from '../models/picture';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dish-carousel',

@@ -1,5 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
+
 import { environment } from '../environments/environment';
 import { merge } from 'lodash';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -19,7 +19,7 @@ export class ApiService {
   MENSA_SERVICE_RATINGS_PATH = 'ratings';
   MENSA_SERVICE_PICTURES_PATH = 'pictures';
 
-  constructor(private http: HttpClient, private logger: NGXLogger) {}
+  constructor(private http: HttpClient) {}
 
   static joinAbsoluteUrlPath(...args) {
     return args.map((pathPart) => pathPart.replace(/(^\/|\/$)/g, '')).join('/');
@@ -70,7 +70,7 @@ export class ApiService {
         'Las2Peer Webconnector adress',
         environment.las2peerWebConnectorUrl
       );
-      this.logger.debug(
+      console.error(
         'Fetching from ' + url + ' with options ' + JSON.stringify(options)
       );
     }

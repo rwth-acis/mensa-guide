@@ -1,13 +1,15 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 
 import { StoreService } from '../store.service';
-import { MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+
 import { ReviewFormComponent } from '../review-form/review-form.component';
 import * as moment from 'moment';
 import { Rating } from '../models/rating';
 import { Dish } from '../models/menu';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface ReviewsDialogData {
   dish: Dish;

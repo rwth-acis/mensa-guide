@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { MensaMenus, MenuItem } from '../models/menu';
+import { MenuItem } from '../models/menu';
 import { Picture } from '../models/picture';
 import { Rating } from '../models/rating';
 import { StoreService } from '../store.service';

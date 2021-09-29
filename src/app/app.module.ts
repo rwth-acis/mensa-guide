@@ -11,23 +11,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { OidcSilentComponent } from './oidc-silent/oidc-silent.component';
 import { OidcSignoutComponent } from './oidc-signout/oidc-signout.component';
 import { OidcSigninComponent } from './oidc-signin/oidc-signin.component';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDialogModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatAutocompleteModule,
-  MatListModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSliderModule,
-  MatSlideToggleModule,
-  MatSnackBarModule,
-} from '@angular/material';
-import { MatProgressButtonsModule } from 'mat-progress-buttons';
+
 import { TodaysMenuComponent } from './todays-menu/todays-menu.component';
 import { DishesComponent } from './dishes/dishes.component';
 import { NgxHmCarouselModule } from 'ngx-hm-carousel';

@@ -11,8 +11,6 @@ import {
 } from '@angular/core';
 import { StoreService } from '../store.service';
 import * as Compress from 'compress.js';
-import { MatProgressButtonOptions } from 'mat-progress-buttons';
-import { MatDialog, MatSnackBar } from '@angular/material';
 
 import { ReviewsComponent } from '../reviews/reviews.component';
 import { meanBy } from 'lodash';
@@ -37,20 +35,20 @@ export class DishCardComponent implements OnInit, AfterViewInit, OnDestroy {
   averageStars: number;
   @ViewChild('photoUpload', { static: false })
   photoFileInput: ElementRef;
-  uploadButtonOpts: MatProgressButtonOptions = {
-    active: false,
-    text: 'UPLOAD PHOTO',
-    spinnerSize: 19,
-    raised: false,
-    stroked: false,
-    flat: false,
-    fab: false,
-    buttonColor: 'primary',
-    spinnerColor: 'primary',
-    fullWidth: false,
-    disabled: false,
-    mode: 'indeterminate',
-  };
+  // uploadButtonOpts: MatProgressButtonOptions = {
+  //   active: false,
+  //   text: 'UPLOAD PHOTO',
+  //   spinnerSize: 19,
+  //   raised: false,
+  //   stroked: false,
+  //   flat: false,
+  //   fab: false,
+  //   buttonColor: 'primary',
+  //   spinnerColor: 'primary',
+  //   fullWidth: false,
+  //   disabled: false,
+  //   mode: 'indeterminate',
+  // };
   carouselPlaceholder = false;
   initialized = false;
   user;
